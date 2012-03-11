@@ -2,6 +2,9 @@
 
 #include "codeEditor.h"
 
+using namespace qReal;
+using namespace gui;
+
 int main(int argv, char **args) {
     QApplication app(argv, args);
 
