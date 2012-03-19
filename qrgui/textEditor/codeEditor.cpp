@@ -5,6 +5,7 @@
 #include <QStringListModel>
 #include <QCursor>
 #include <QMessageBox>
+#include <QFileDialog>
 #include "codeEditor.h"
 
 using namespace qReal;
@@ -12,8 +13,11 @@ using namespace gui;
 
 CodeEditor::CodeEditor(QWidget *parent)
 	: QMainWindow(parent)
+	, mNewAct(0)
 	, mOpenAct(0)
 	, mSaveAct(0)
+	, mSaveAsAct(0)
+	, mFileMenu(0)
 	, mCodeArea(this)
 	, mCompleter(0)
 {
@@ -21,12 +25,16 @@ CodeEditor::CodeEditor(QWidget *parent)
 	
 	initCompleter();
 	createActions();
+	createMenus();
 }
 
 CodeEditor::CodeEditor(const QString& filename, QWidget *parent)
 	: QMainWindow(parent)
+	, mNewAct(0)
 	, mOpenAct(0)
 	, mSaveAct(0)
+	, mSaveAsAct(0)
+	, mFileMenu(0)
 	, mCodeArea(this)
 	, mCompleter(0)
 {
@@ -40,11 +48,13 @@ CodeEditor::CodeEditor(const QString& filename, QWidget *parent)
 
 	if (inStream) {
 		mCodeArea.document()->setPlainText(inStream->readAll());
+		//mCodeArea.document()->setHtml(inStream->readAll());
 		delete inStream;
 	}
 	
 	initCompleter();
 	createActions();
+	createMenus();
 }
 
 CodeEditor::~CodeEditor()
@@ -55,6 +65,11 @@ CodeEditor::~CodeEditor()
 	}
 	mCompleter = 0;
 
+	if (mNewAct) {
+		delete mNewAct;
+	}
+	mNewAct = 0;
+
 	if (mOpenAct) {
 		delete mOpenAct;
 	}
@@ -64,6 +79,11 @@ CodeEditor::~CodeEditor()
 		delete mSaveAct;
 	}
 	mSaveAct = 0;
+
+	if (mFileMenu) {
+		delete mFileMenu;
+	}
+	mFileMenu = 0;
 }
 
 void CodeEditor::initCompleter()
@@ -80,7 +100,11 @@ void CodeEditor::initCompleter()
 }
 
 void CodeEditor::createActions()
-{
+{	
+	mNewAct = new QAction(tr("New"), this);
+	mNewAct->setStatusTip(tr("Create a new file"));
+	connect(mNewAct, SIGNAL(triggered()), this, SLOT(newFile()));
+
 	mOpenAct = new QAction(tr("Open"), this);
 	mOpenAct->setStatusTip(tr("Open an existing file"));
 	connect(mOpenAct, SIGNAL(triggered()), this, SLOT(open()));
@@ -88,6 +112,20 @@ void CodeEditor::createActions()
 	mSaveAct = new QAction(tr("Save"), this);
 	mSaveAct->setStatusTip(tr("Save the document to disk"));
 	connect(mSaveAct, SIGNAL(triggered()), this, SLOT(save()));
+
+	mSaveAsAct = new QAction(tr("Save As"), this);
+	mSaveAsAct->setStatusTip(tr("Save the document under a new name"));
+	connect(mSaveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+
+}
+
+void CodeEditor::createMenus()
+{
+	mFileMenu = menuBar()->addMenu(tr("File"));
+	mFileMenu->addAction(mNewAct);
+	mFileMenu->addAction(mOpenAct);
+	mFileMenu->addAction(mSaveAct);
+	mFileMenu->addAction(mSaveAsAct);
 }
 
 void CodeEditor::setHighlightedLineNumbers(const QList<int>& lineNumbers)
@@ -117,20 +155,37 @@ QStringListModel* CodeEditor::modelFromFile(QString const &fileName)
 
 void CodeEditor::open()
 {
-	//TODO
+	if (maybeSave()) {
+		QString const fileName = QFileDialog::getOpenFileName(this);
+		if (!fileName.isEmpty())
+			loadFile(fileName);
+	}
 }
 
 bool CodeEditor::save()
 {
-	//TODO
+	if (mCurFileName.isEmpty()) {
+		return saveAs();
+	} else {
+		return saveFile(mCurFileName);
+	}
+
 	return true;
+}
+
+bool CodeEditor::saveAs() {
+	QString const fileName = QFileDialog::getSaveFileName(this);
+	if (fileName.isEmpty())
+		return false;
+
+	return saveFile(fileName);
 }
 
 bool CodeEditor::maybeSave()
 {
 	if (mCodeArea.document()->isModified()) {
-		QMessageBox::StandardButton ret;
-		ret = QMessageBox::warning(this, tr("Code editor"),
+		QMessageBox::StandardButton const ret =
+			QMessageBox::warning(this, tr("Code editor"),
 				tr("The document has been modified.\n"\
 				"Do you want to save your changes?"),
 				QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
@@ -141,4 +196,65 @@ bool CodeEditor::maybeSave()
 		}
 	}
 	return true;
+}
+
+void CodeEditor::documentWasModified()
+{
+	setWindowModified(mCodeArea.document()->isModified());
+}
+
+void CodeEditor::loadFile(QString const &fileName)
+{
+	QFile file(fileName);
+	if (!file.open(QFile::ReadOnly) | QFile::Text) {
+		QMessageBox::warning(this, tr("Code editor"),
+				tr("Cannot read file %1:\n%2")
+				.arg(fileName)
+				.arg(file.errorString()));
+		return;
+	}
+
+	QTextStream in(&file);
+	//QApplication::setOverrideCursor(Qt::WaitCursor);
+	mCodeArea.setPlainText(in.readAll());
+	//mCodeArea.setHtml(in.readAll());
+	//QApplication::restoreOverrideCursor();
+	
+	setCurrentFile(fileName);
+}
+
+void CodeEditor::setCurrentFile(QString const &fileName)
+{
+	mCurFileName = fileName;
+	mCodeArea.document()->setModified(false);
+	setWindowModified(false);
+}
+
+bool CodeEditor::saveFile(QString const &fileName)
+{
+	QFile file(fileName);
+	if (!file.open(QFile::WriteOnly | QFile::Text)) {
+		QMessageBox::warning(this, tr("Code Editor"),
+				tr("Cannot write file %1: \n%2.")
+				.arg(fileName)
+				.arg(file.errorString()));
+		return false;
+	}
+
+	QTextStream out(&file);
+	//QApplication::setOverrideCursor(Qt::WaitCursor);
+	out << mCodeArea.toPlainText();
+	//QApplication::restoreOverrideCursor();
+	
+	setCurrentFile(fileName);
+	return true;
+}
+
+void CodeEditor::newFile()
+{
+	if (maybeSave()) {
+		QString fileName = QFileDialog::getOpenFileName(this);
+		if (!fileName.isEmpty())
+			loadFile(fileName);
+	}
 }
