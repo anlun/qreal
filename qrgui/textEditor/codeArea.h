@@ -1,12 +1,14 @@
 #pragma once
 
 #include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QObject>
 #include <QCompleter>
 #include <QFocusEvent>
 #include <QKeyEvent>
 #include "textHighlighter.h"
 #include "genyHighlighter.h"
+#include "lineNumberArea.h"
 
 namespace qReal {
 namespace gui {
@@ -14,34 +16,45 @@ namespace gui {
 class CodeArea : public QTextEdit {
 	Q_OBJECT
 
-	public:
-		CodeArea(QWidget *parent = 0);
-		~CodeArea();
+public:
+	CodeArea(QWidget *parent = 0);
+	~CodeArea();
 
-		void setHighlightedLineNumbers(QList<int> const &);
+	void setHighlightedLineNumbers(QList<int> const &);
 		
-		void setCompleter(QCompleter* completer);
-		QCompleter* completer() const;
+	void setCompleter(QCompleter* completer);
+	QCompleter* completer() const;
 
-	protected:
-		void keyPressEvent(QKeyEvent* e);
-		void focusInEvent(QFocusEvent* e);
+	void lineNumberAreaPaintEvent(QPaintEvent* e);
+	int lineNumberAreaWidth() const;
 
-	private slots:
-		void highlightCurrentLine();
-		void insertCompletion(QString const &completion);
+protected:
+	void keyPressEvent(QKeyEvent* e);
+	void focusInEvent(QFocusEvent* e);
+	void resizeEvent(QResizeEvent* e);
 
-	private:
-		static const int mCompletionStartPrefixSize = 3;
+private slots:
+	void highlightCurrentLine();
+	void insertCompletion(QString const &completion);
+	void updateLineNumberAreaWidth(int newBlockCount);
+	void updateLineNumberArea(
+			QRect const &rect
+			, int dy             ///< change in y
+			);
 
-		QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
-		QString textUnderCursor() const;
+private:
+	static const int mCompletionStartPrefixSize = 3;
 
-		//TextHighlighter *mHighlighter;
-		GenyHighlighter* mHighlighter;
-		QList<int> mHighlightedLineNumbers;
+	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
+	QString textUnderCursor() const;
+
+	//TextHighlighter *mHighlighter;
+	GenyHighlighter* mHighlighter;
+	QList<int> mHighlightedLineNumbers;
 		
-		QCompleter* mCompleter;
+	QCompleter* mCompleter;
+
+	LineNumberArea* mLineNumberArea;
 };
 
 }
