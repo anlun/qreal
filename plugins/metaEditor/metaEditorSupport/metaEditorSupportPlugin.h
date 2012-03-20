@@ -36,6 +36,9 @@ private slots:
 	/// in metaeditor
 	void parseEditorXml();
 
+	/// Opens Geny editor
+	void openGenyEditor();
+
 private:
 	/// Compiles and loads to QReal new editor plugin
 	void loadNewEditor(
@@ -55,6 +58,9 @@ private:
 
 	/// Action that starts parsing of existing .xml metamodel
 	QAction mParseEditorXmlAction;
+
+	/// Action that opens Geny editor
+	QAction mOpenGenyEditorAction;
 
 	/// Thanslator object for this plugin, provides localisation
 	QTranslator mAppTranslator;

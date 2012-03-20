@@ -2,6 +2,9 @@
 
 #include <QSyntaxHighlighter>
 
+namespace qReal {
+namespace gui {
+
 class GenyHighlighter : QSyntaxHighlighter {
 public:
 	GenyHighlighter(QTextDocument *document);
@@ -36,3 +39,6 @@ private:
 	QTextCharFormat mFigitsFormat;
 	*/
 };
+
+}
+}

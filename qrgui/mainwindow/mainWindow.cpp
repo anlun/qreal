@@ -1840,7 +1840,7 @@ bool MainWindow::showConnectionRelatedMenus() const
 
 void MainWindow::showInTextEditor(QString const &title, QString const &text)
 {
-	CodeArea * const area = new CodeArea();
+	qReal::gui::CodeArea * const area = new qReal::gui::CodeArea();
 	area->document()->setPlainText(text);
 
 	area->show();

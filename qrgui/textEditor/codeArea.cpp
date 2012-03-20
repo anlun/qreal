@@ -5,6 +5,9 @@
 #include <QScrollBar>
 #include "codeArea.h"
 
+using namespace qReal;
+using namespace gui;
+
 CodeArea::CodeArea(QWidget *parent)
 	: QTextEdit(parent)
 	, mHighlighter(0)

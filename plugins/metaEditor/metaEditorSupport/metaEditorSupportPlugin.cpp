@@ -9,6 +9,7 @@
 
 #include "../../../qrkernel/settingsManager.h"
 #include "../../../qrmc/metaCompiler.h"
+#include "../../../qrgui/textEditor/codeEditor.h"
 
 #include "editorGenerator.h"
 #include "xmlParser.h"
@@ -22,6 +23,7 @@ MetaEditorSupportPlugin::MetaEditorSupportPlugin()
 		: mGenerateEditorForQrxcAction(NULL)
 		, mGenerateEditorWithQrmcAction(NULL)
 		, mParseEditorXmlAction(NULL)
+		, mOpenGenyEditorAction(NULL)
 		, mRepoControlApi(NULL)
 		, mCompilerSettingsPage(new PreferencesCompilerPage())
 {
@@ -54,13 +56,24 @@ QList<ActionInfo> MetaEditorSupportPlugin::actions()
 	ActionInfo parseEditorXmlActionInfo(&mParseEditorXmlAction, "generators", "tools");
 	connect(&mParseEditorXmlAction, SIGNAL(triggered()), this, SLOT(parseEditorXml()));
 
+	mOpenGenyEditorAction.setText(tr("Open Geny editor"));
+	ActionInfo openGenyEditorActionInfo(&mOpenGenyEditorAction, "generators", "tools");
+	connect(&mOpenGenyEditorAction, SIGNAL(triggered()), this, SLOT(openGenyEditor()));
+
 	return QList<ActionInfo>() << generateEditorForQrxcActionInfo << generateEditorWithQrmcActionInfo
-			<< parseEditorXmlActionInfo;
+			<< parseEditorXmlActionInfo << openGenyEditorActionInfo;
 }
 
 QPair<QString, PreferencesPage *> MetaEditorSupportPlugin::preferencesPage()
 {
 	return qMakePair(QObject::tr("Compiler"), static_cast<PreferencesPage*>(mCompilerSettingsPage));
+}
+
+void MetaEditorSupportPlugin::openGenyEditor()
+{
+	using namespace qReal::gui;
+	CodeEditor editor("1.cpp");
+	editor.show();
 }
 
 void MetaEditorSupportPlugin::generateEditorForQrxc()

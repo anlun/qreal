@@ -8,6 +8,9 @@
 #include "textHighlighter.h"
 #include "genyHighlighter.h"
 
+namespace qReal {
+namespace gui {
+
 class CodeArea : public QTextEdit {
 	Q_OBJECT
 
@@ -40,3 +43,6 @@ class CodeArea : public QTextEdit {
 		
 		QCompleter* mCompleter;
 };
+
+}
+}

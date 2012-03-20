@@ -1,5 +1,8 @@
 #include "genyHighlighter.h"
 
+using namespace qReal;
+using namespace gui;
+
 GenyHighlighter::GenyHighlighter(QTextDocument *document): QSyntaxHighlighter(document)
 {
 	HighlightingRule rule;
