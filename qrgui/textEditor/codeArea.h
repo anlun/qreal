@@ -13,7 +13,7 @@
 namespace qReal {
 namespace gui {
 
-class CodeArea : public QTextEdit {
+class CodeArea : public QPlainTextEdit {
 	Q_OBJECT
 
 public:

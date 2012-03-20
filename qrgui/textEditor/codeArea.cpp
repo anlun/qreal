@@ -10,7 +10,8 @@ using namespace qReal;
 using namespace gui;
 
 CodeArea::CodeArea(QWidget *parent)
-	: QTextEdit(parent)
+	//: QTextEdit(parent)
+	: QPlainTextEdit(parent)
 	, mHighlighter(0)
 	, mCompleter(0)
 	, mLineNumberArea(0)
@@ -57,9 +58,9 @@ void CodeArea::updateLineNumberAreaWidth(int /* newBlockCount */)
 
 void CodeArea::updateLineNumberArea(QRect const &rect, int dy) {
 	if (dy) {
-		lineNumberArea->scroll(0, dy);
+		mLineNumberArea->scroll(0, dy);
 	} else {
-		lineNumberArea->update(0, rect.y(), lineNumberArea->width(), rect.height());
+		mLineNumberArea->update(0, rect.y(), mLineNumberArea->width(), rect.height());
 	}
 
 	if (rect.contains(viewport()->rect())) {
@@ -69,10 +70,11 @@ void CodeArea::updateLineNumberArea(QRect const &rect, int dy) {
 
 void CodeArea::resizeEvent(QResizeEvent* e)
 {
-	QTextEdit::resizeEvent(e);
+	//QTextEdit::resizeEvent(e);
+	QPlainTextEdit::resizeEvent(e);
 
 	QRect cr = contentsRect();
-	mLineNumberArea->setGeometry(QRect(cr.left()), cr.top(), lineNumberAreaWidth(), cr.height());
+	mLineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
 void CodeArea::highlightCurrentLine()
@@ -135,10 +137,10 @@ void CodeArea::lineNumberAreaPaintEvent(QPaintEvent* e)
 	int bottom = top + (int) blockBoundingRect(block).height();
 
 	while (block.isValid() && top <= e->rect().bottom()) {
-		if (block.isVisible() && bottom >= e->rect(.top())) {
+		if (block.isVisible() && bottom >= e->rect().top()) {
 			QString number = QString::number(blockNumber + 1);
 			painter.setPen(Qt::black);
-			painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
+			painter.drawText(0, top, mLineNumberArea->width(), fontMetrics().height(),
 					Qt::AlignRight, number);
 		}
 
@@ -200,7 +202,8 @@ void CodeArea::focusInEvent(QFocusEvent* e)
 {
 	if (mCompleter)
 		mCompleter->setWidget(this);
-	QTextEdit::focusInEvent(e);
+	//QTextEdit::focusInEvent(e);
+	QPlainTextEdit::focusInEvent(e);
 }
 
 void CodeArea::keyPressEvent(QKeyEvent* e)
@@ -221,7 +224,8 @@ void CodeArea::keyPressEvent(QKeyEvent* e)
 
 	bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && (e->key() == Qt::Key_E)); // CTRL+E
 	if (!mCompleter || !isShortcut)
-		QTextEdit::keyPressEvent(e);
+		//QTextEdit::keyPressEvent(e);
+		QPlainTextEdit::keyPressEvent(e);
 
 	const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
 	if (!mCompleter || (ctrlOrShift && e->text().isEmpty()))

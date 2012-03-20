@@ -8,9 +8,16 @@ DEPENDPATH += .
 INCLUDEPATH += .
 
 # Input
-HEADERS += codeArea.h codeEditor.h genyHighlighter.h textHighlighter.h
-SOURCES += codeArea.cpp \
-           codeEditor.cpp \
-           genyHighlighter.cpp \
-           main.cpp \
-           textHighlighter.cpp
+HEADERS += \
+	codeArea.h \
+	codeEditor.h \
+	genyHighlighter.h \
+	textHighlighter.h \
+	lineNumberArea.h
+SOURCES += \
+	codeArea.cpp \
+	codeEditor.cpp \
+	genyHighlighter.cpp \
+	main.cpp \
+	textHighlighter.cpp \
+	lineNumberArea.cpp
