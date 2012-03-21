@@ -214,8 +214,23 @@ void CodeEditor::loadFile(QString const &fileName)
 			blockToHighlightNumbers.append(curLineNumber);
 			curLine = curLine.right(curLine.size() - 2); //chop first 2 symbols "#!"
 		}
-		mCodeArea.appendPlainText(curLine);
+		
+		QRegExp controlInsertionRegExp("\@\@\\w+\@\@");
+		int index = controlInsertionRegExp.indexIn(curLine);
+		while (index >= 0) {
+			int length = controlInsertionRegExp.matchedLength();
+			QString toReplaceStr = controlInsertionRegExp.cap();
+			toReplaceStr = toReplaceStr.left(toReplaceStr.length() - 2) + "</b>"; // changing last @@ to </b>
+			toReplaceStr = "<b>" + toReplaceStr.right(toReplaceStr.length() -2); // changing first @@ to <b>
 
+			curLine.replace(index, length, toReplaceStr);
+
+			index = controlInsertionRegExp.indexIn(curLine, index + length);
+		}
+
+		//mCodeArea.appendPlainText(curLine);
+		mCodeArea.appendHtml(curLine);
+		
 		curLineNumber++;
 	}
 	mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
