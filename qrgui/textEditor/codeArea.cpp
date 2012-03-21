@@ -27,6 +27,8 @@ CodeArea::CodeArea(QWidget *parent)
 	mLineNumberArea = new LineNumberArea(this);
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
 	connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
+
+	JUST_TEST_FLAG = true;
 }
 
 CodeArea::~CodeArea()
@@ -94,6 +96,7 @@ void CodeArea::highlightCurrentLine()
 	}
 
 	extraSelections.append(highlightedLinesSelectionList());
+	extraSelections.append(highlightedBlocksSelectionList());
 	setExtraSelections(extraSelections);
 }
 
@@ -119,6 +122,37 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedLinesSelectionList()
 			selection.cursor.clearSelection();
 			//selection.cursor.select(QTextCursor::LineUnderCursor);
 			selection.cursor.select(QTextCursor::BlockUnderCursor);
+			extraSelections.append(selection);
+		}
+	}
+
+	return extraSelections;
+}
+
+QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
+{
+	if (JUST_TEST_FLAG) {
+		JUST_TEST_FLAG = false;
+		mHighlightedBlocks.append(document()->findBlockByNumber(7));
+		mHighlightedBlocks.append(document()->findBlockByNumber(9));
+	}
+	qDebug() << "%%%%%%%%%%%%" << mHighlightedBlocks.size();
+	qDebug() << this;
+
+	QList<QTextEdit::ExtraSelection> extraSelections;
+
+	if (!isReadOnly()) {
+		QTextEdit::ExtraSelection selection;
+
+		QColor lineColor = QColor(Qt::red).lighter(160);
+
+		selection.format.setBackground(lineColor);
+		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+
+		foreach (QTextBlock const &block, mHighlightedBlocks) {
+			selection.cursor = QTextCursor(block);
+			selection.cursor.clearSelection();
+			selection.cursor.select(QTextCursor::LineUnderCursor);
 			extraSelections.append(selection);
 		}
 	}

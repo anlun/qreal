@@ -46,6 +46,7 @@ private:
 	static const int mCompletionStartPrefixSize = 3;
 
 	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
+	QList<QTextEdit::ExtraSelection> highlightedBlocksSelectionList();
 	QString textUnderCursor() const;
 
 	//TextHighlighter *mHighlighter;
@@ -55,6 +56,10 @@ private:
 	QCompleter* mCompleter;
 
 	LineNumberArea* mLineNumberArea;
+
+	QList<QTextBlock> mHighlightedBlocks;
+
+	bool JUST_TEST_FLAG;
 };
 
 }
