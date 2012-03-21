@@ -23,6 +23,7 @@ CodeArea::CodeArea(QWidget *parent)
 
 	highlightCurrentLine();
 	//setReadOnly(true);
+	setLineWrapMode(QPlainTextEdit::NoWrap);
 	
 	mLineNumberArea = new LineNumberArea(this);
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
@@ -142,7 +143,7 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
 		foreach (QTextBlock const &block, mHighlightedBlocks) {
 			selection.cursor = QTextCursor(block);
 			selection.cursor.clearSelection();
-			selection.cursor.select(QTextCursor::LineUnderCursor);
+			//selection.cursor.select(QTextCursor::LineUnderCursor);
 			extraSelections.append(selection);
 		}
 	}
