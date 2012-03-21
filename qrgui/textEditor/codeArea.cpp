@@ -10,7 +10,6 @@ using namespace qReal;
 using namespace gui;
 
 CodeArea::CodeArea(QWidget *parent)
-	//: QTextEdit(parent)
 	: QPlainTextEdit(parent)
 	, mHighlighter(0)
 	, mCompleter(0)
@@ -28,6 +27,8 @@ CodeArea::CodeArea(QWidget *parent)
 	mLineNumberArea = new LineNumberArea(this);
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
 	connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
+
+	alignControlLines();
 }
 
 CodeArea::~CodeArea()
@@ -47,7 +48,7 @@ int CodeArea::lineNumberAreaWidth() const
 		digits++;
 	}
 
-	//9 - the widest symbol
+	//'9' - the widest symbol
 	//3 - just for pretty look 
 	return 3 + fontMetrics().width(QLatin1Char('9')) * digits;
 }
@@ -141,16 +142,24 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
 	if (!isReadOnly()) {
 		QTextEdit::ExtraSelection selection;
 
-		QColor lineColor = QColor(Qt::yellow).lighter(180);
+		QColor lineColor = QColor(Qt::gray).lighter(140);
 
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 
-		foreach (QTextBlock const &block, mHighlightedBlocks) {
-			selection.cursor = QTextCursor(block);
-			selection.cursor.clearSelection();
-			//selection.cursor.select(QTextCursor::LineUnderCursor);
-			extraSelections.append(selection);
+		QTextBlock block = firstVisibleBlock();
+		while (block.isValid()) {
+			if (block.isVisible()) {
+				bool contains = mControlBlocks.contains(block);
+				if ( !(contains ^ mAreControlLinesNeededToBeHighlighted) ) {
+					selection.cursor = QTextCursor(block);
+					selection.cursor.clearSelection();
+					//selection.cursor.select(QTextCursor::LineUnderCursor);
+					extraSelections.append(selection);
+				}
+			}
+
+			block = block.next();
 		}
 	}
 
@@ -171,7 +180,7 @@ void CodeArea::lineNumberAreaPaintEvent(QPaintEvent* e)
 		if (block.isVisible() && bottom >= e->rect().top()) {
 			QString number = QString::number(blockNumber + 1);
 			painter.setPen(Qt::black);
-			if (mHighlightedBlocks.contains(block)) {
+			if (mControlBlocks.contains(block)) {
 				painter.setPen(Qt::red);
 			}
 
@@ -192,14 +201,16 @@ void CodeArea::lineNumberAreaMousePressEvent(QMouseEvent* e)
 		QTextCursor const cursorForMousePoint = cursorForPosition(e->pos());
 		QTextBlock const curBlock = cursorForMousePoint.block();
 
-		if (mHighlightedBlocks.contains(curBlock)) {
-			mHighlightedBlocks.removeAll(curBlock);
+		if (mControlBlocks.contains(curBlock)) {
+			mControlBlocks.removeAll(curBlock);
 		} else {
-			mHighlightedBlocks.append(curBlock);
+			mControlBlocks.append(curBlock);
 		}
 	}
 
 	QPlainTextEdit::mousePressEvent(e);
+
+	alignControlLines();
 }
 
 QCompleter* CodeArea::completer() const
@@ -253,7 +264,6 @@ void CodeArea::focusInEvent(QFocusEvent* e)
 {
 	if (mCompleter)
 		mCompleter->setWidget(this);
-	//QTextEdit::focusInEvent(e);
 	QPlainTextEdit::focusInEvent(e);
 }
 
@@ -275,7 +285,6 @@ void CodeArea::keyPressEvent(QKeyEvent* e)
 
 	bool isShortcut = ((e->modifiers() & Qt::ControlModifier) && (e->key() == Qt::Key_E)); // CTRL+E
 	if (!mCompleter || !isShortcut)
-		//QTextEdit::keyPressEvent(e);
 		QPlainTextEdit::keyPressEvent(e);
 
 	const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
@@ -309,14 +318,46 @@ void CodeArea::keyPressEvent(QKeyEvent* e)
 
 void CodeArea::clearHighlightedBlocksList()
 {
-	mHighlightedBlocks.clear();
+	mControlBlocks.clear();
 	highlightLines(); //to update block changing
 }
 
 void CodeArea::addBlockToHighlightNumbers(QList<int> const &blockNumbers)
 {
 	foreach (int number, blockNumbers) {
-		mHighlightedBlocks.append(document()->findBlockByNumber(number));
+		mControlBlocks.append(document()->findBlockByNumber(number));
 	}
 	highlightLines(); //to update block changing
+}
+
+void CodeArea::alignControlLines()
+{
+	int curTabNumber = 0;
+	//foreach (QTextBlock const &block, mControlBlocks) { // blocks must be in logical order!!!
+
+	QTextBlock block = document()->firstBlock();
+	while (block.isValid()) {
+		if (!mControlBlocks.contains(block)) {
+			block = block.next();
+			continue;
+		}
+
+		QString text = block.text().trimmed();
+
+		if (text.startsWith("}") && (curTabNumber > 0)) {
+			curTabNumber--;
+		}
+
+		QTextCursor cursor(block);
+		cursor.insertText(QString(curTabNumber, '\t'));
+		cursor.insertHtml(text);
+		cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+		cursor.removeSelectedText();
+
+		if (text.startsWith("{")) {
+			curTabNumber++;
+		}
+
+		block = block.next();
+	}
 }

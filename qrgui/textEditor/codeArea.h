@@ -32,6 +32,8 @@ public:
 	void clearHighlightedBlocksList();
 	void addBlockToHighlightNumbers(QList<int> const &blockNumbers);
 
+	void alignControlLines();
+
 protected:
 	void keyPressEvent(QKeyEvent* e);
 	void focusInEvent(QFocusEvent* e);
@@ -45,11 +47,12 @@ private slots:
 	void updateLineNumberAreaWidth(int newBlockCount);
 	void updateLineNumberArea(
 			QRect const &rect
-			, int dy             ///< change in y
+			, int dy             ///< change in y coord
 			);
 
 private:
-	static const int mCompletionStartPrefixSize = 3;
+	static int const mCompletionStartPrefixSize = 3;
+	static bool const mAreControlLinesNeededToBeHighlighted = false;
 
 	QTextEdit::ExtraSelection highlightCurrentLine();
 	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
@@ -64,7 +67,7 @@ private:
 
 	LineNumberArea* mLineNumberArea;
 
-	QList<QTextBlock> mHighlightedBlocks;
+	QList<QTextBlock> mControlBlocks;
 };
 
 }

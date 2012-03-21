@@ -235,6 +235,8 @@ void CodeEditor::loadFile(QString const &fileName)
 	}
 	mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
 
+	mCodeArea.alignControlLines();
+
 	/*
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
 	mCodeArea.setPlainText(in.readAll());
