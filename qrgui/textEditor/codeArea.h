@@ -29,6 +29,9 @@ public:
 	void lineNumberAreaMousePressEvent(QMouseEvent* e);
 	int lineNumberAreaWidth() const;
 
+	void clearHighlightedBlocksList();
+	void addBlockToHighlightNumbers(QList<int> const &blockNumbers);
+
 protected:
 	void keyPressEvent(QKeyEvent* e);
 	void focusInEvent(QFocusEvent* e);

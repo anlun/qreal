@@ -135,7 +135,7 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
 	if (!isReadOnly()) {
 		QTextEdit::ExtraSelection selection;
 
-		QColor lineColor = QColor(Qt::yellow).lighter(160);
+		QColor lineColor = QColor(Qt::yellow).lighter(180);
 
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -299,4 +299,18 @@ void CodeArea::keyPressEvent(QKeyEvent* e)
 	cr.setWidth(mCompleter->popup()->sizeHintForColumn(0)
 			+ mCompleter->popup()->verticalScrollBar()->sizeHint().width());
 	mCompleter->complete(cr);
+}
+
+void CodeArea::clearHighlightedBlocksList()
+{
+	mHighlightedBlocks.clear();
+	highlightCurrentLine(); //to update block changing
+}
+
+void CodeArea::addBlockToHighlightNumbers(QList<int> const &blockNumbers)
+{
+	foreach (int number, blockNumbers) {
+		mHighlightedBlocks.append(document()->findBlockByNumber(number));
+	}
+	highlightCurrentLine(); //to update block changing
 }

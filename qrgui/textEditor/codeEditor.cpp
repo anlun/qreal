@@ -28,7 +28,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	createMenus();
 }
 
-CodeEditor::CodeEditor(const QString& filename, QWidget *parent)
+CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(0)
 	, mOpenAct(0)
@@ -39,18 +39,7 @@ CodeEditor::CodeEditor(const QString& filename, QWidget *parent)
 	, mCompleter(0)
 {
 	setCentralWidget(&mCodeArea);
-	QFile file(filename);
-	QTextStream *inStream = 0;
-	if (!file.isOpen() && file.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		inStream = new QTextStream(&file);
-	}
-
-	if (inStream) {
-		mCodeArea.document()->setPlainText(inStream->readAll());
-		//mCodeArea.document()->setHtml(inStream->readAll());
-		delete inStream;
-	}
+	loadFile(fileName);
 	
 	initCompleter();
 	createActions();
@@ -206,7 +195,7 @@ void CodeEditor::documentWasModified()
 void CodeEditor::loadFile(QString const &fileName)
 {
 	QFile file(fileName);
-	if (!file.open(QFile::ReadOnly) | QFile::Text) {
+	if (file.isOpen() || !file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		QMessageBox::warning(this, tr("Code editor"),
 				tr("Cannot read file %1:\n%2")
 				.arg(fileName)
@@ -214,11 +203,29 @@ void CodeEditor::loadFile(QString const &fileName)
 		return;
 	}
 
+	mCodeArea.clearHighlightedBlocksList();
+
 	QTextStream in(&file);
+	int curLineNumber = 0;
+	QList<int> blockToHighlightNumbers;
+	while (!in.atEnd()) {
+		QString curLine = in.readLine();
+		if (curLine.startsWith("#!")) {
+			blockToHighlightNumbers.append(curLineNumber);
+			curLine = curLine.right(curLine.size() - 2); //chop first 2 symbols "#!"
+		}
+		mCodeArea.appendPlainText(curLine);
+
+		curLineNumber++;
+	}
+	mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
+
+	/*
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
 	mCodeArea.setPlainText(in.readAll());
 	//mCodeArea.setHtml(in.readAll());
 	//QApplication::restoreOverrideCursor();
+	*/
 	
 	setCurrentFile(fileName);
 }
@@ -233,7 +240,7 @@ void CodeEditor::setCurrentFile(QString const &fileName)
 bool CodeEditor::saveFile(QString const &fileName)
 {
 	QFile file(fileName);
-	if (!file.open(QFile::WriteOnly | QFile::Text)) {
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		QMessageBox::warning(this, tr("Code Editor"),
 				tr("Cannot write file %1: \n%2.")
 				.arg(fileName)
