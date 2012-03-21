@@ -38,7 +38,9 @@ protected:
 	void resizeEvent(QResizeEvent* e);
 
 private slots:
-	void highlightCurrentLine();
+	/// Highlights current line, control blocks, lines from mHighlightedLineNumbers
+	void highlightLines();
+
 	void insertCompletion(QString const &completion);
 	void updateLineNumberAreaWidth(int newBlockCount);
 	void updateLineNumberArea(
@@ -49,6 +51,7 @@ private slots:
 private:
 	static const int mCompletionStartPrefixSize = 3;
 
+	QTextEdit::ExtraSelection highlightCurrentLine();
 	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
 	QList<QTextEdit::ExtraSelection> highlightedBlocksSelectionList();
 	QString textUnderCursor() const;

@@ -16,12 +16,12 @@ CodeArea::CodeArea(QWidget *parent)
 	, mCompleter(0)
 	, mLineNumberArea(0)
 {
-	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightLines()));
 
 	//mHighlighter = new TextHighlighter(document());
 	mHighlighter = new GenyHighlighter(document());
 
-	highlightCurrentLine();
+	highlightLines();
 	//setReadOnly(true);
 	setLineWrapMode(QPlainTextEdit::NoWrap);
 	
@@ -71,19 +71,28 @@ void CodeArea::updateLineNumberArea(QRect const &rect, int dy) {
 
 void CodeArea::resizeEvent(QResizeEvent* e)
 {
-	//QTextEdit::resizeEvent(e);
 	QPlainTextEdit::resizeEvent(e);
 
 	QRect cr = contentsRect();
 	mLineNumberArea->setGeometry(QRect(cr.left(), cr.top(), lineNumberAreaWidth(), cr.height()));
 }
 
-void CodeArea::highlightCurrentLine()
+void CodeArea::highlightLines()
 {
 	QList<QTextEdit::ExtraSelection> extraSelections;
 
+	extraSelections.append(highlightCurrentLine());
+	extraSelections.append(highlightedLinesSelectionList());
+	extraSelections.append(highlightedBlocksSelectionList());
+
+	setExtraSelections(extraSelections);
+}
+
+QTextEdit::ExtraSelection CodeArea::highlightCurrentLine()
+{
+	QTextEdit::ExtraSelection selection;
+
 	if (!isReadOnly()) {
-		QTextEdit::ExtraSelection selection;
 
 		QColor lineColor = QColor(Qt::blue).lighter(190);
 
@@ -91,12 +100,9 @@ void CodeArea::highlightCurrentLine()
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 		selection.cursor = textCursor();
 		selection.cursor.clearSelection();
-		extraSelections.append(selection);
 	}
 
-	extraSelections.append(highlightedLinesSelectionList());
-	extraSelections.append(highlightedBlocksSelectionList());
-	setExtraSelections(extraSelections);
+	return selection;
 }
 
 void CodeArea::setHighlightedLineNumbers(QList<int> const &list)
@@ -232,7 +238,7 @@ void CodeArea::insertCompletion(QString const &completion)
 	tc.select(QTextCursor::WordUnderCursor);
 	tc.removeSelectedText();
 
-	tc.insertHtml("<b><asdf>" + completion + "</asdf></b>");
+	tc.insertHtml("<b>" + completion + "</b>");
 	setTextCursor(tc);
 }
 
@@ -304,7 +310,7 @@ void CodeArea::keyPressEvent(QKeyEvent* e)
 void CodeArea::clearHighlightedBlocksList()
 {
 	mHighlightedBlocks.clear();
-	highlightCurrentLine(); //to update block changing
+	highlightLines(); //to update block changing
 }
 
 void CodeArea::addBlockToHighlightNumbers(QList<int> const &blockNumbers)
@@ -312,5 +318,5 @@ void CodeArea::addBlockToHighlightNumbers(QList<int> const &blockNumbers)
 	foreach (int number, blockNumbers) {
 		mHighlightedBlocks.append(document()->findBlockByNumber(number));
 	}
-	highlightCurrentLine(); //to update block changing
+	highlightLines(); //to update block changing
 }

@@ -14,6 +14,8 @@
 #include "editorGenerator.h"
 #include "xmlParser.h"
 
+#include <QPushButton>
+
 Q_EXPORT_PLUGIN2(metaEditorSupportPlugin, metaEditor::MetaEditorSupportPlugin)
 
 using namespace qReal;
@@ -72,8 +74,8 @@ QPair<QString, PreferencesPage *> MetaEditorSupportPlugin::preferencesPage()
 void MetaEditorSupportPlugin::openGenyEditor()
 {
 	using namespace qReal::gui;
-	CodeEditor editor("1.cpp");
-	editor.show();
+	CodeEditor* editor = new CodeEditor("1.cpp");
+	editor->show();
 }
 
 void MetaEditorSupportPlugin::generateEditorForQrxc()
