@@ -26,6 +26,7 @@ public:
 	QCompleter* completer() const;
 
 	void lineNumberAreaPaintEvent(QPaintEvent* e);
+	void lineNumberAreaMousePressEvent(QMouseEvent* e);
 	int lineNumberAreaWidth() const;
 
 protected:
@@ -58,8 +59,6 @@ private:
 	LineNumberArea* mLineNumberArea;
 
 	QList<QTextBlock> mHighlightedBlocks;
-
-	bool JUST_TEST_FLAG;
 };
 
 }

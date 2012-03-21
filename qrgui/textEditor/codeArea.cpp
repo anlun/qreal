@@ -27,8 +27,6 @@ CodeArea::CodeArea(QWidget *parent)
 	mLineNumberArea = new LineNumberArea(this);
 	connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateLineNumberAreaWidth(int)));
 	connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
-
-	JUST_TEST_FLAG = true;
 }
 
 CodeArea::~CodeArea()
@@ -131,20 +129,12 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedLinesSelectionList()
 
 QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
 {
-	if (JUST_TEST_FLAG) {
-		JUST_TEST_FLAG = false;
-		mHighlightedBlocks.append(document()->findBlockByNumber(7));
-		mHighlightedBlocks.append(document()->findBlockByNumber(9));
-	}
-	qDebug() << "%%%%%%%%%%%%" << mHighlightedBlocks.size();
-	qDebug() << this;
-
 	QList<QTextEdit::ExtraSelection> extraSelections;
 
 	if (!isReadOnly()) {
 		QTextEdit::ExtraSelection selection;
 
-		QColor lineColor = QColor(Qt::red).lighter(160);
+		QColor lineColor = QColor(Qt::yellow).lighter(160);
 
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -174,6 +164,10 @@ void CodeArea::lineNumberAreaPaintEvent(QPaintEvent* e)
 		if (block.isVisible() && bottom >= e->rect().top()) {
 			QString number = QString::number(blockNumber + 1);
 			painter.setPen(Qt::black);
+			if (mHighlightedBlocks.contains(block)) {
+				painter.setPen(Qt::red);
+			}
+
 			painter.drawText(0, top, mLineNumberArea->width(), fontMetrics().height(),
 					Qt::AlignRight, number);
 		}
@@ -183,6 +177,22 @@ void CodeArea::lineNumberAreaPaintEvent(QPaintEvent* e)
 		bottom = top + (int) blockBoundingRect(block).height();
 		blockNumber++;
 	}
+}
+
+void CodeArea::lineNumberAreaMousePressEvent(QMouseEvent* e)
+{
+	if (e->button() == Qt::LeftButton) {
+		QTextCursor const cursorForMousePoint = cursorForPosition(e->pos());
+		QTextBlock const curBlock = cursorForMousePoint.block();
+
+		if (mHighlightedBlocks.contains(curBlock)) {
+			mHighlightedBlocks.removeAll(curBlock);
+		} else {
+			mHighlightedBlocks.append(curBlock);
+		}
+	}
+
+	QPlainTextEdit::mousePressEvent(e);
 }
 
 QCompleter* CodeArea::completer() const
