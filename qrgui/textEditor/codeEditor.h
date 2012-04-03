@@ -34,6 +34,9 @@ class CodeEditor : public QMainWindow {
 		bool saveAs();
 		void documentWasModified();
 
+		void toggleHighlightedLineType();
+		void toggleControlLineVisible();
+
 	private:
 		void initCompleter();
 		void createActions();
@@ -53,8 +56,12 @@ class CodeEditor : public QMainWindow {
 		QAction* mOpenAct;
 		QAction* mSaveAct;
 		QAction* mSaveAsAct;
-	
+
+		QAction* mToggleHighlightedLineTypeAct;
+		QAction* mToggleControlLineVisibleAct;
+
 		QMenu* mFileMenu;
+		QMenu* mViewMenu;
 
 		CodeArea mCodeArea;
 		QCompleter* mCompleter;

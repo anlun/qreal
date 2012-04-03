@@ -17,7 +17,10 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mOpenAct(0)
 	, mSaveAct(0)
 	, mSaveAsAct(0)
+	, mToggleHighlightedLineTypeAct(0)
+	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
+	, mViewMenu(0)
 	, mCodeArea(this)
 	, mCompleter(0)
 {
@@ -34,7 +37,10 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	, mOpenAct(0)
 	, mSaveAct(0)
 	, mSaveAsAct(0)
+	, mToggleHighlightedLineTypeAct(0)
+	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
+	, mViewMenu(0)
 	, mCodeArea(this)
 	, mCompleter(0)
 {
@@ -69,10 +75,31 @@ CodeEditor::~CodeEditor()
 	}
 	mSaveAct = 0;
 
+	if (mSaveAsAct) {
+		delete mSaveAsAct;
+	}
+	mSaveAsAct = 0;
+
 	if (mFileMenu) {
 		delete mFileMenu;
 	}
 	mFileMenu = 0;
+
+	if (mToggleHighlightedLineTypeAct) {
+		delete mToggleHighlightedLineTypeAct;
+	}
+	mToggleHighlightedLineTypeAct = 0;
+
+	if (mToggleControlLineVisibleAct) {
+		delete mToggleControlLineVisibleAct;
+	}
+	mToggleControlLineVisibleAct = 0;
+
+	if (mViewMenu) {
+		delete mViewMenu;
+	}
+	mViewMenu = 0;
+
 }
 
 void CodeEditor::initCompleter()
@@ -106,6 +133,13 @@ void CodeEditor::createActions()
 	mSaveAsAct->setStatusTip(tr("Save the document under a new name"));
 	connect(mSaveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
+	mToggleHighlightedLineTypeAct = new QAction(tr("Switch line highlighting"), this);
+	mToggleHighlightedLineTypeAct->setStatusTip(tr("Toggle highlighting beetwen control and not lines"));
+	connect(mToggleHighlightedLineTypeAct, SIGNAL(triggered()), this, SLOT(toggleHighlightedLineType()));
+
+	mToggleControlLineVisibleAct = new QAction(tr("Switch control line visibility"), this);
+	mToggleControlLineVisibleAct->setStatusTip(tr("Show/unshow control lines"));
+	connect(mToggleControlLineVisibleAct, SIGNAL(triggered()), this, SLOT(toggleControlLineVisible()));
 }
 
 void CodeEditor::createMenus()
@@ -115,6 +149,10 @@ void CodeEditor::createMenus()
 	mFileMenu->addAction(mOpenAct);
 	mFileMenu->addAction(mSaveAct);
 	mFileMenu->addAction(mSaveAsAct);
+	
+	mViewMenu = menuBar()->addMenu(tr("View"));
+	mViewMenu->addAction(mToggleHighlightedLineTypeAct);
+	mViewMenu->addAction(mToggleControlLineVisibleAct);
 }
 
 void CodeEditor::setHighlightedLineNumbers(const QList<int>& lineNumbers)
@@ -281,4 +319,14 @@ void CodeEditor::newFile()
 		if (!fileName.isEmpty())
 			loadFile(fileName);
 	}
+}
+
+void CodeEditor::toggleHighlightedLineType()
+{
+	mCodeArea.toggleHighlightedLineType();
+}
+
+void CodeEditor::toggleControlLineVisible()
+{
+	mCodeArea.toggleControlLineVisible();
 }

@@ -14,6 +14,8 @@ CodeArea::CodeArea(QWidget *parent)
 	, mHighlighter(0)
 	, mCompleter(0)
 	, mLineNumberArea(0)
+	, mAreControlLinesNeededToBeHighlighted(false)
+	, mAreControlLinesNeededToBeShowed(true)
 {
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightLines()));
 
@@ -147,8 +149,13 @@ QList<QTextEdit::ExtraSelection> CodeArea::highlightedBlocksSelectionList()
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
 
-		QTextBlock block = firstVisibleBlock();
+		//QTextBlock block = firstVisibleBlock();
+		QTextBlock block = document()->firstBlock();
 		while (block.isValid()) {
+			//if (!mAreControlLinesNeededToBeShowed && 
+			//		mControlBlocks.contains(block))
+			//	block.setVisible(false);
+
 			if (block.isVisible()) {
 				bool contains = mControlBlocks.contains(block);
 				if ( !(contains ^ mAreControlLinesNeededToBeHighlighted) ) {
@@ -360,4 +367,21 @@ void CodeArea::alignControlLines()
 
 		block = block.next();
 	}
+}
+
+void CodeArea::toggleHighlightedLineType()
+{
+	mAreControlLinesNeededToBeHighlighted = !mAreControlLinesNeededToBeHighlighted;
+	highlightLines();
+}
+
+void CodeArea::toggleControlLineVisible()
+{
+	mAreControlLinesNeededToBeShowed = !mAreControlLinesNeededToBeShowed;
+	foreach(QTextBlock block, mControlBlocks) {
+		block.setVisible(mAreControlLinesNeededToBeShowed);
+	}
+	highlightLines();
+
+	//resizeEvent(new QResizeEvent(size(), size()));
 }

@@ -34,6 +34,12 @@ public:
 
 	void alignControlLines();
 
+	/// Change that lines to highlight - control or not
+	void toggleHighlightedLineType();
+
+	/// Change visibility of control lines
+	void toggleControlLineVisible();
+
 protected:
 	void keyPressEvent(QKeyEvent* e);
 	void focusInEvent(QFocusEvent* e);
@@ -52,7 +58,6 @@ private slots:
 
 private:
 	static int const mCompletionStartPrefixSize = 3;
-	static bool const mAreControlLinesNeededToBeHighlighted = false;
 
 	QTextEdit::ExtraSelection highlightCurrentLine();
 	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
@@ -64,10 +69,11 @@ private:
 	QList<int> mHighlightedLineNumbers;
 		
 	QCompleter* mCompleter;
-
 	LineNumberArea* mLineNumberArea;
-
 	QList<QTextBlock> mControlBlocks;
+
+	bool mAreControlLinesNeededToBeHighlighted;
+	bool mAreControlLinesNeededToBeShowed;
 };
 
 }
