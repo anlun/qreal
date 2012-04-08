@@ -6,7 +6,7 @@ DESTDIR = ../../../bin/plugins/
 MOC_DIR = .moc
 RCC_DIR = .moc
 
-LIBS += -L../../../bin -lqrkernel -lqrutils -lqrmc
+LIBS += -L../../../bin -lqrkernel -lqrutils -lqrmc -lqrrepo
 
 TRANSLATIONS = metaEditorSupport_ru.ts
 

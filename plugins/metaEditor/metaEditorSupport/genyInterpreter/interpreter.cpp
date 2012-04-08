@@ -506,14 +506,13 @@ QString Interpreter::interpret()
 	}
 	mInStream->seek(0); //for second execute of interpret
 
-	QString curStr;
-	curStr = mInStream->readLine();
+	QString const curStr = mInStream->readLine();
 	if (!curStr.startsWith("Task ")) {
 		qDebug() << "Task file" << mTaskFile.fileName() << "doesn't start with \"Task __name__\"";
 		return "";
 	}
 
-	QString taskName = curStr.right(curStr.length() - 5); //5 - "Task " length;
+	QString const taskName = curStr.right(curStr.length() - 5); //5 - "Task " length;
 
 	return interpret(*mInStream);
 }
