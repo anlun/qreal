@@ -38,6 +38,8 @@ class CodeEditor : public QMainWindow {
 		void toggleHighlightedLineType();
 		void toggleControlLineVisible();
 
+		void currentTabChanged(int index);
+
 	private:
 		void initCompleter();
 		void createActions();

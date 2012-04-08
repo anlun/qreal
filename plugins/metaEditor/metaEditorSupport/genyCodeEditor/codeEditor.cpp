@@ -57,6 +57,8 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	initCompleter();
 	createActions();
 	createMenus();
+
+	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) ), this, SLOT( currentTabChanged(int) ));
 }
 
 CodeEditor::~CodeEditor()
@@ -192,6 +194,12 @@ QStringListModel* CodeEditor::modelFromFile(QString const &fileName)
 
 	QApplication::restoreOverrideCursor();
 	return new QStringListModel(words, mCompleter);
+}
+
+void CodeEditor::newFile()
+{
+	int newTabIndex = mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+	mCodeAreaTab.setCurrentIndex(newTabIndex);
 }
 
 void CodeEditor::open()
@@ -333,15 +341,6 @@ bool CodeEditor::saveFile(QString const &fileName)
 	return true;
 }
 
-void CodeEditor::newFile()
-{
-	if (maybeSave()) {
-		QString fileName = QFileDialog::getOpenFileName(this);
-		if (!fileName.isEmpty())
-			loadFile(fileName);
-	}
-}
-
 void CodeEditor::toggleHighlightedLineType()
 {
 	//mCodeArea.toggleHighlightedLineType();
@@ -352,4 +351,9 @@ void CodeEditor::toggleControlLineVisible()
 {
 	//mCodeArea.toggleControlLineVisible();
 	currentCodeArea()->toggleControlLineVisible();
+}
+
+void CodeEditor::currentTabChanged(int index)
+{
+	currentCodeArea()->setCompleter(mCompleter);
 }
