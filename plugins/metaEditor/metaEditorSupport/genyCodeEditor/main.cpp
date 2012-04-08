@@ -3,7 +3,7 @@
 #include "codeEditor.h"
 
 using namespace qReal;
-using namespace gui;
+using namespace genyCodeEditor;
 
 int main(int argv, char **args) {
     QApplication app(argv, args);

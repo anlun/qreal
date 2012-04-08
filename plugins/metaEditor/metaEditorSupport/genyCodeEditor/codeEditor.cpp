@@ -21,10 +21,13 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	, mCodeArea(this)
+	//, mCodeArea(this)
 	, mCompleter(0)
 {
-	setCentralWidget(&mCodeArea);
+	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+
+	//setCentralWidget(&mCodeArea);
+	setCentralWidget(&mCodeAreaTab);
 	
 	initCompleter();
 	createActions();
@@ -41,10 +44,14 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	, mCodeArea(this)
+	//, mCodeArea(this)
 	, mCompleter(0)
 {
-	setCentralWidget(&mCodeArea);
+	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+
+	//setCentralWidget(&mCodeArea);
+	setCentralWidget(&mCodeAreaTab);
+	
 	loadFile(fileName);
 	
 	initCompleter();
@@ -55,7 +62,7 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 CodeEditor::~CodeEditor()
 {
 	if (mCompleter) {
-		mCodeArea.setCompleter(0);
+		//mCodeArea.setCompleter(0); // TODO
 		delete mCompleter;
 	}
 	mCompleter = 0;
@@ -102,6 +109,11 @@ CodeEditor::~CodeEditor()
 
 }
 
+CodeArea* CodeEditor::currentCodeArea()
+{
+	return dynamic_cast<CodeArea *>(mCodeAreaTab.currentWidget());
+}
+
 void CodeEditor::initCompleter()
 {
 	mCompleter = new QCompleter(this);
@@ -112,7 +124,8 @@ void CodeEditor::initCompleter()
 	mCompleter->setCaseSensitivity(Qt::CaseInsensitive);
 	//mCompleter->setCaseSensitivity(Qt::CaseSensitive);
 	mCompleter->setWrapAround(false);
-	mCodeArea.setCompleter(mCompleter);
+
+	currentCodeArea()->setCompleter(mCompleter);
 }
 
 void CodeEditor::createActions()
@@ -155,9 +168,10 @@ void CodeEditor::createMenus()
 	mViewMenu->addAction(mToggleControlLineVisibleAct);
 }
 
-void CodeEditor::setHighlightedLineNumbers(const QList<int>& lineNumbers)
+void CodeEditor::setHighlightedLineNumbers(QList<int> const &lineNumbers)
 {
-	mCodeArea.setHighlightedLineNumbers(lineNumbers);
+	currentCodeArea()->setHighlightedLineNumbers(lineNumbers);
+	//mCodeArea.setHighlightedLineNumbers(lineNumbers); //TODO
 }
 
 //QAbstractItemModel* CodeEditor::modelFromFile(QString const &fileName)
@@ -210,7 +224,8 @@ bool CodeEditor::saveAs() {
 
 bool CodeEditor::maybeSave()
 {
-	if (mCodeArea.document()->isModified()) {
+	if (currentCodeArea()->document()->isModified()) {
+	//if (mCodeArea.document()->isModified()) {
 		QMessageBox::StandardButton const ret =
 			QMessageBox::warning(this, tr("Code editor"),
 				tr("The document has been modified.\n"\
@@ -227,7 +242,8 @@ bool CodeEditor::maybeSave()
 
 void CodeEditor::documentWasModified()
 {
-	setWindowModified(mCodeArea.document()->isModified());
+	//setWindowModified(mCodeArea.document()->isModified());
+	setWindowModified(currentCodeArea()->document()->isModified());
 }
 
 void CodeEditor::loadFile(QString const &fileName)
@@ -241,7 +257,8 @@ void CodeEditor::loadFile(QString const &fileName)
 		return;
 	}
 
-	mCodeArea.clearHighlightedBlocksList();
+	//mCodeArea.clearHighlightedBlocksList();
+	currentCodeArea()->clearHighlightedBlocksList();
 
 	QTextStream in(&file);
 	int curLineNumber = 0;
@@ -267,13 +284,16 @@ void CodeEditor::loadFile(QString const &fileName)
 		}
 
 		//mCodeArea.appendPlainText(curLine);
-		mCodeArea.appendHtml(curLine);
+		//mCodeArea.appendHtml(curLine);
+		currentCodeArea()->appendHtml(curLine);
 		
 		curLineNumber++;
 	}
-	mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
+	//mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
+	currentCodeArea()->addBlockToHighlightNumbers(blockToHighlightNumbers);
 
-	mCodeArea.alignControlLines();
+	//mCodeArea.alignControlLines();
+	currentCodeArea()->alignControlLines();
 
 	/*
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -288,7 +308,8 @@ void CodeEditor::loadFile(QString const &fileName)
 void CodeEditor::setCurrentFile(QString const &fileName)
 {
 	mCurFileName = fileName;
-	mCodeArea.document()->setModified(false);
+	//mCodeArea.document()->setModified(false);
+	currentCodeArea()->document()->setModified(false);
 	setWindowModified(false);
 }
 
@@ -305,7 +326,7 @@ bool CodeEditor::saveFile(QString const &fileName)
 
 	QTextStream out(&file);
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
-	out << mCodeArea.toPlainText();
+	out << currentCodeArea()->toPlainText();
 	//QApplication::restoreOverrideCursor();
 	
 	setCurrentFile(fileName);
@@ -323,10 +344,12 @@ void CodeEditor::newFile()
 
 void CodeEditor::toggleHighlightedLineType()
 {
-	mCodeArea.toggleHighlightedLineType();
+	//mCodeArea.toggleHighlightedLineType();
+	currentCodeArea()->toggleHighlightedLineType();
 }
 
 void CodeEditor::toggleControlLineVisible()
 {
-	mCodeArea.toggleControlLineVisible();
+	//mCodeArea.toggleControlLineVisible();
+	currentCodeArea()->toggleControlLineVisible();
 }

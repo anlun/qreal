@@ -11,13 +11,12 @@ INCLUDEPATH += .
 HEADERS += \
 	codeArea.h \
 	codeEditor.h \
-	genyHighlighter.h \
-	textHighlighter.h \
+	syntaxHighlighter.h \
 	lineNumberArea.h
+
 SOURCES += \
 	codeArea.cpp \
 	codeEditor.cpp \
-	genyHighlighter.cpp \
+	syntaxHighlighter.cpp \
 	main.cpp \
-	textHighlighter.cpp \
 	lineNumberArea.cpp

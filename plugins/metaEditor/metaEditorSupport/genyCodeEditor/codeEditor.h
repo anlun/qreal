@@ -8,6 +8,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
+#include <QTabWidget>
 
 #include "codeArea.h"
 
@@ -22,7 +23,7 @@ class CodeEditor : public QMainWindow {
 		CodeEditor(QString const &fileName, QWidget *parent = 0);
 		~CodeEditor();
 
-		void setHighlightedLineNumbers(const QList<int>& lineNumbers);
+		void setHighlightedLineNumbers(QList<int> const &lineNumbers);
 
 	//protected:
 	//	void closeEvent(QCloseEvent* event);
@@ -49,6 +50,9 @@ class CodeEditor : public QMainWindow {
 
 		void setCurrentFile(QString const &fileName);
 
+		/// Returns current active in tabs CodeArea
+		CodeArea* currentCodeArea();
+
 		//QAbstractItemModel* modelFromFile(QString const &fileName);
 		QStringListModel* modelFromFile(QString const &fileName);
 
@@ -63,7 +67,8 @@ class CodeEditor : public QMainWindow {
 		QMenu* mFileMenu;
 		QMenu* mViewMenu;
 
-		CodeArea mCodeArea;
+		QTabWidget mCodeAreaTab;
+		//CodeArea mCodeArea;
 		QCompleter* mCompleter;
 
 		QString mCurFileName;
