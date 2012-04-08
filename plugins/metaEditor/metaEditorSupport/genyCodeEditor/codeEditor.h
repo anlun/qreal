@@ -70,10 +70,7 @@ class CodeEditor : public QMainWindow {
 		QMenu* mViewMenu;
 
 		QTabWidget mCodeAreaTab;
-		//CodeArea mCodeArea;
 		QCompleter* mCompleter;
-
-		QString mCurFileName;
 };
 
 }

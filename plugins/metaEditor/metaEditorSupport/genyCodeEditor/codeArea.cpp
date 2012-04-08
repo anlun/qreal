@@ -388,3 +388,13 @@ void CodeArea::toggleControlLineVisible()
 
 	//resizeEvent(new QResizeEvent(size(), size()));
 }
+
+QString CodeArea::connectedFileName()
+{
+	return mFileName;
+}
+
+void CodeArea::setConnectedFileName(QString const &newFileName)
+{
+	mFileName = newFileName;
+}

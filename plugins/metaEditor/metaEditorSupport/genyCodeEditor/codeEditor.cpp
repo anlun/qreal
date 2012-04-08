@@ -21,7 +21,6 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	//, mCodeArea(this)
 	, mCompleter(0)
 {
 	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
@@ -44,27 +43,25 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	//, mCodeArea(this)
 	, mCompleter(0)
 {
-	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+	mCodeAreaTab.addTab(new CodeArea, QFileInfo(fileName).fileName());
 
-	//setCentralWidget(&mCodeArea);
 	setCentralWidget(&mCodeAreaTab);
-	
+
 	loadFile(fileName);
 	
 	initCompleter();
 	createActions();
 	createMenus();
 
-	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) ), this, SLOT( currentTabChanged(int) ));
+	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) )
+			, this, SLOT( currentTabChanged(int) ));
 }
 
 CodeEditor::~CodeEditor()
 {
 	if (mCompleter) {
-		//mCodeArea.setCompleter(0); // TODO
 		delete mCompleter;
 	}
 	mCompleter = 0;
@@ -204,19 +201,20 @@ void CodeEditor::newFile()
 
 void CodeEditor::open()
 {
-	if (maybeSave()) {
-		QString const fileName = QFileDialog::getOpenFileName(this);
-		if (!fileName.isEmpty())
-			loadFile(fileName);
-	}
+	QString const fileName = QFileDialog::getOpenFileName(this);
+	int newTabIndex = mCodeAreaTab.addTab(new CodeArea()
+			, QFileInfo(fileName).fileName());
+	mCodeAreaTab.setCurrentIndex(newTabIndex);
+	
+	loadFile(fileName);
 }
 
 bool CodeEditor::save()
 {
-	if (mCurFileName.isEmpty()) {
+	if (currentCodeArea()->connectedFileName().isEmpty()) {
 		return saveAs();
 	} else {
-		return saveFile(mCurFileName);
+		return saveFile(currentCodeArea()->connectedFileName());
 	}
 
 	return true;
@@ -227,13 +225,19 @@ bool CodeEditor::saveAs() {
 	if (fileName.isEmpty())
 		return false;
 
-	return saveFile(fileName);
+	bool result = saveFile(fileName);
+
+	if (result) {
+		mCodeAreaTab.setTabText(mCodeAreaTab.currentIndex()
+				, QFileInfo(fileName).fileName());
+	}
+
+	return result;
 }
 
 bool CodeEditor::maybeSave()
 {
 	if (currentCodeArea()->document()->isModified()) {
-	//if (mCodeArea.document()->isModified()) {
 		QMessageBox::StandardButton const ret =
 			QMessageBox::warning(this, tr("Code editor"),
 				tr("The document has been modified.\n"\
@@ -303,20 +307,12 @@ void CodeEditor::loadFile(QString const &fileName)
 	//mCodeArea.alignControlLines();
 	currentCodeArea()->alignControlLines();
 
-	/*
-	//QApplication::setOverrideCursor(Qt::WaitCursor);
-	mCodeArea.setPlainText(in.readAll());
-	//mCodeArea.setHtml(in.readAll());
-	//QApplication::restoreOverrideCursor();
-	*/
-	
 	setCurrentFile(fileName);
 }
 
 void CodeEditor::setCurrentFile(QString const &fileName)
 {
-	mCurFileName = fileName;
-	//mCodeArea.document()->setModified(false);
+	currentCodeArea()->setConnectedFileName(fileName);
 	currentCodeArea()->document()->setModified(false);
 	setWindowModified(false);
 }
@@ -353,7 +349,7 @@ void CodeEditor::toggleControlLineVisible()
 	currentCodeArea()->toggleControlLineVisible();
 }
 
-void CodeEditor::currentTabChanged(int index)
+void CodeEditor::currentTabChanged(int)
 {
 	currentCodeArea()->setCompleter(mCompleter);
 }

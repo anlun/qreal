@@ -39,6 +39,9 @@ public:
 	/// Change visibility of control lines
 	void toggleControlLineVisible();
 
+	void setConnectedFileName(QString const &newFileName);
+	QString connectedFileName();
+
 protected:
 	void keyPressEvent(QKeyEvent* e);
 	void focusInEvent(QFocusEvent* e);
@@ -72,6 +75,10 @@ private:
 
 	bool mAreControlLinesNeededToBeHighlighted;
 	bool mAreControlLinesNeededToBeShowed;
+
+	// name of connected file, to that will be
+	// saved content in case of save event (not save as)
+	QString mFileName;
 };
 
 }
