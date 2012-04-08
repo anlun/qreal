@@ -29,6 +29,11 @@ CodeArea::CodeArea(QWidget *parent)
 	connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateLineNumberArea(QRect, int)));
 
 	alignControlLines();
+
+	// Need to resolve bug of invisible first character in line
+	// if CodeArea was empty before typing
+	appendPlainText("\n");
+	document()->clear();
 }
 
 CodeArea::~CodeArea()
