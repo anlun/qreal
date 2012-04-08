@@ -67,6 +67,3 @@ include (toolPluginInterface/toolPluginInterface.pri)
 
 # Interpreters: visual debugger and robots
 include (interpreters/interpreters.pri)
-
-# Text Editor
-include (textEditor/textEditor.pri)

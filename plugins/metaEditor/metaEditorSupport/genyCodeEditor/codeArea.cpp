@@ -7,7 +7,7 @@
 #include "codeArea.h"
 
 using namespace qReal;
-using namespace gui;
+using namespace genyCodeEditor;
 
 CodeArea::CodeArea(QWidget *parent)
 	: QPlainTextEdit(parent)
@@ -19,11 +19,9 @@ CodeArea::CodeArea(QWidget *parent)
 {
 	connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightLines()));
 
-	//mHighlighter = new TextHighlighter(document());
-	mHighlighter = new GenyHighlighter(document());
+	mHighlighter = new SyntaxHighlighter(document());
 
 	highlightLines();
-	//setReadOnly(true);
 	setLineWrapMode(QPlainTextEdit::NoWrap);
 	
 	mLineNumberArea = new LineNumberArea(this);

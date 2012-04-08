@@ -26,3 +26,6 @@ include(expressionsParser/expressionsParser.pri)
 
 # Graphical scene framework used in qrgui and plugins
 include(graphicsUtils/graphicsUtils.pri)
+
+# Code Viewer
+include(codeViewer/codeViewer.pri)

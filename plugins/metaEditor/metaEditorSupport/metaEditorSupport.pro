@@ -28,3 +28,4 @@ SOURCES += \
 FORMS += \
 	compilerPage.ui \
 
+include (genyCodeEditor/genyCodeEditor.pri)

@@ -9,7 +9,8 @@
 
 #include "../../../qrkernel/settingsManager.h"
 #include "../../../qrmc/metaCompiler.h"
-#include "../../../qrgui/textEditor/codeEditor.h"
+#include "genyCodeEditor/codeEditor.h"
+#include "genyCodeEditor/codeArea.h"
 
 #include "editorGenerator.h"
 #include "xmlParser.h"
@@ -73,8 +74,8 @@ QPair<QString, PreferencesPage *> MetaEditorSupportPlugin::preferencesPage()
 
 void MetaEditorSupportPlugin::openGenyEditor()
 {
-	using namespace qReal::gui;
-	CodeEditor* editor = new CodeEditor("1.cpp");
+	using namespace qReal::genyCodeEditor;
+	CodeEditor* editor = new CodeEditor();
 	editor->show();
 }
 

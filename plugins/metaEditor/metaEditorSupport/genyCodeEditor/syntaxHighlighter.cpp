@@ -1,9 +1,9 @@
-#include "genyHighlighter.h"
+#include "syntaxHighlighter.h"
 
 using namespace qReal;
-using namespace gui;
+using namespace genyCodeEditor;
 
-GenyHighlighter::GenyHighlighter(QTextDocument *document): QSyntaxHighlighter(document)
+SyntaxHighlighter::SyntaxHighlighter(QTextDocument *document): QSyntaxHighlighter(document)
 {
 	HighlightingRule rule;
 	
@@ -82,7 +82,7 @@ GenyHighlighter::GenyHighlighter(QTextDocument *document): QSyntaxHighlighter(do
 	//mCommentEndExpression = QRegExp("\\*/");
 }
 
-void GenyHighlighter::highlightBlock(const QString& text)
+void SyntaxHighlighter::highlightBlock(const QString& text)
 {
 	foreach (const HighlightingRule &rule, mHighlightingRules) {
 		QRegExp expression(rule.pattern);

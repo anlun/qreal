@@ -9,7 +9,7 @@
 #include "codeEditor.h"
 
 using namespace qReal;
-using namespace gui;
+using namespace genyCodeEditor;
 
 CodeEditor::CodeEditor(QWidget *parent)
 	: QMainWindow(parent)

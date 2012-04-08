@@ -18,7 +18,7 @@
 #include "mainWindowInterpretersInterface.h"
 #include "../../qrkernel/settingsManager.h"
 #include "../../qrgui/dialogs/preferencesDialog.h"
-#include "../textEditor/codeEditor.h"
+#include "../../qrutils/codeViewer/codeViewer.h"
 #include "helpBrowser.h"
 
 #include "../models/logicalModelAssistApi.h"

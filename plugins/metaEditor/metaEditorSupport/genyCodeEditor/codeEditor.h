@@ -12,7 +12,7 @@
 #include "codeArea.h"
 
 namespace qReal {
-namespace gui {
+namespace genyCodeEditor {
 
 class CodeEditor : public QMainWindow {
 	Q_OBJECT

@@ -6,12 +6,11 @@
 #include <QCompleter>
 #include <QFocusEvent>
 #include <QKeyEvent>
-#include "textHighlighter.h"
-#include "genyHighlighter.h"
+#include "syntaxHighlighter.h"
 #include "lineNumberArea.h"
 
 namespace qReal {
-namespace gui {
+namespace genyCodeEditor {
 
 class CodeArea : public QPlainTextEdit {
 	Q_OBJECT
@@ -64,8 +63,7 @@ private:
 	QList<QTextEdit::ExtraSelection> highlightedBlocksSelectionList();
 	QString textUnderCursor() const;
 
-	//TextHighlighter *mHighlighter;
-	GenyHighlighter* mHighlighter;
+	SyntaxHighlighter* mHighlighter;
 	QList<int> mHighlightedLineNumbers;
 		
 	QCompleter* mCompleter;

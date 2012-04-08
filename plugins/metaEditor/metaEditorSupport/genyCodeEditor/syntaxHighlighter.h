@@ -3,11 +3,11 @@
 #include <QSyntaxHighlighter>
 
 namespace qReal {
-namespace gui {
+namespace genyCodeEditor {
 
-class GenyHighlighter : QSyntaxHighlighter {
+class SyntaxHighlighter : QSyntaxHighlighter {
 public:
-	GenyHighlighter(QTextDocument *document);
+	SyntaxHighlighter(QTextDocument *document);
 	void highlightBlock(const QString& text);
 
 private:
