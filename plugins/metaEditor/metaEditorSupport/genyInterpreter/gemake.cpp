@@ -4,60 +4,69 @@
 #include "interpreter.h"
 #include "gemake.h"
 
-using namespace Geny;
+using namespace genyInterpreter;
 
-Gemake::Gemake(QString gemakeFilename): makeFile(gemakeFilename), 
-		filesByTasks(0), inStream(0), repoPath("") {
+Gemake::Gemake(QString const &gemakeFilename): mMakeFile(gemakeFilename), 
+		mFilesByTasks(0), mInStream(0), mRepoPath("")
+{
 	init();
 }
 
-Gemake::~Gemake() {
-	if (!inStream)
-		delete inStream;
-	if (!filesByTasks)
-		delete filesByTasks;
-	makeFile.close();
+Gemake::~Gemake()
+{
+	if (!mInStream)
+		delete mInStream;
+	if (!mFilesByTasks)
+		delete mFilesByTasks;
+	mMakeFile.close();
 }
 
-QString Gemake::getTaskFilename(const QString& taskName) {
-	return filesByTasks->value(taskName);
+QString Gemake::getTaskFilename(QString const &taskName) const
+{
+	return mFilesByTasks->value(taskName);
 }
 
-bool Gemake::init() {
-	if (!makeFile.isOpen() && makeFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		inStream = new QTextStream(&makeFile);
+bool Gemake::init()
+{
+	if (!mMakeFile.isOpen()
+		&& mMakeFile.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		mInStream = new QTextStream(&mMakeFile);
 	}
 	
-	if (!makeFile.isOpen() || inStream == 0){
-		qDebug() << "cannot load make file \"" << makeFile.fileName() << "\"";
+	if (!mMakeFile.isOpen() || mInStream == 0) {
+		qDebug() << "cannot load make file \"" 
+			<< mMakeFile.fileName() << "\"";
 	}
 
-	repoPath = inStream->readLine();
+	mRepoPath = mInStream->readLine();
 
 	QStringList taskFilenames;
-	while (!inStream->atEnd()) {
-		QString curFilename = inStream->readLine();
+	while (!mInStream->atEnd()) {
+		QString const curFilename = mInStream->readLine();
 		if (curFilename.trimmed().isEmpty())
 			continue;
 
 		taskFilenames.append(curFilename.trimmed());
 	}
 	
-	if (!filesByTasks)
-		delete filesByTasks;
-	filesByTasks = new QMap<QString, QString>();
+	if (!mFilesByTasks)
+		delete mFilesByTasks;
+	mFilesByTasks = new QMap<QString, QString>();
 
-	foreach (QString curFilename, taskFilenames) {
+	foreach (QString const &curFilename, taskFilenames) {
 		QFile curFile(curFilename);
 		QTextStream* curStream = 0;
 		if (curFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
 			curStream = new QTextStream(&curFile);
-			QString startLine = curStream->readLine();
+			QString const startLine = curStream->readLine();
 			if (startLine.startsWith("Task ")) {
-				filesByTasks->insert(startLine.mid(5).trimmed(), curFilename);
+				mFilesByTasks->insert(startLine.mid(5).trimmed(), curFilename);
 			}
 			else
-				qDebug() << "File" << curFilename << "doesn't start with task name";
+				qDebug() << "File" 
+					<< curFilename
+					<< "doesn't start with task name";
 		}
 		else
 			qDebug() << "File" << curFilename << "wasn't found!";
@@ -66,7 +75,9 @@ bool Gemake::init() {
 	return true;
 }
 
-void Gemake::make() {
-	Interpreter ipreter(repoPath, filesByTasks->value("Main"), qReal::Id(), this);
+void Gemake::make()
+{
+	Interpreter ipreter(mRepoPath, mFilesByTasks->value("Main"),
+			qReal::Id(), this);
 	ipreter.interpret();
 }

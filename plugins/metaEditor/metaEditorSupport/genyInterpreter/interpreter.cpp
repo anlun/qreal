@@ -3,33 +3,41 @@
 #include "interpreter.h"
 #include "gemake.h"
 
-using namespace Geny;
+using namespace qReal;
+using namespace genyInterpreter;
 
-//TODO: добавить выброс исключений по error'ам
-
-Interpreter::Interpreter(const QString& repoPath, const QString& taskFilename, qReal::Id curObjectId, Gemake* geMaker): 
-		taskFile(taskFilename), inStream(0), rApi(repoPath), repoPath(repoPath), 
-		geMaker(geMaker), curObjectId(curObjectId) {
+Interpreter::Interpreter(QString const &repoPath, QString const &taskFilename,
+		Id curObjectId, Gemake* geMaker)
+	: mTaskFile(taskFilename)
+	, mInStream(0)
+	, rApi(repoPath)
+	, mRepoPath(repoPath)
+	, mGeMaker(geMaker)
+	, mCurrentObjectId(curObjectId)
+{
 }
 
-Interpreter::~Interpreter() {
-	if (inStream)
-		delete inStream;
-	taskFile.close();
+Interpreter::~Interpreter()
+{
+	if (mInStream)
+		delete mInStream;
+	mTaskFile.close();
 }
 
-qReal::Id Interpreter::getCurObjId() {
-	return curObjectId;
+Id Interpreter::getCurObjId() const
+{
+	return mCurrentObjectId;
 }
 
-QString Interpreter::controlExpressionParse(const QString& expression) {
+QString Interpreter::controlExpressionParse(QString const &expression)
+{
 	if (expression.at(0) != '!') {
 		if (!expression.contains('@'))
 			return getCurObjProperty(expression);
 		else {
 			QStringList listOfSplitting = expression.split("@");
 			if (listOfSplitting.size() == 2) {
-				return getObjProperty(objectsByLabels[listOfSplitting[0].trimmed()], listOfSplitting[1].trimmed());
+				return getObjProperty(mObjectsByLabels[listOfSplitting[0].trimmed()], listOfSplitting[1].trimmed());
 			}
 			else
 				qDebug() << "Fail in \'@@ @ @@\' expression";
@@ -38,7 +46,7 @@ QString Interpreter::controlExpressionParse(const QString& expression) {
 	else if (expression.startsWith("!task ")){
 		QString subTaskName = expression.mid(6).trimmed();
 
-		Interpreter ipreter(repoPath, geMaker->getTaskFilename(subTaskName), getCurObjId(), geMaker);
+		Interpreter ipreter(mRepoPath, mGeMaker->getTaskFilename(subTaskName), getCurObjId(), mGeMaker);
 		return ipreter.interpret();
 	} else
 		qDebug() << "Fail in @@! expression";
@@ -46,7 +54,8 @@ QString Interpreter::controlExpressionParse(const QString& expression) {
 	return "";
 }
 
-QString Interpreter::getObjProperty(const qReal::Id& objectId, const QString& propertyName) {
+QString Interpreter::getObjProperty(Id const &objectId, QString const &propertyName) const
+{
 	if (!rApi.exist(objectId)) {
 		qDebug() << "Error! Trying to work with not existed element Id in current repository!";
 		return ""; //TODO: возможно лучше бросать исключение!
@@ -60,11 +69,13 @@ QString Interpreter::getObjProperty(const qReal::Id& objectId, const QString& pr
 	return rApi.property(objectId, propertyName).toString();
 }
 
-QString Interpreter::getCurObjProperty(const QString& propertyName) {
+QString Interpreter::getCurObjProperty(QString const &propertyName) const
+{
 	return getObjProperty(getCurObjId(), propertyName);
 }
 
-Interpreter::ControlStringType Interpreter::controlStringType(const QString& str) {
+Interpreter::ControlStringType Interpreter::controlStringType(QString const &str) const
+{
 	QString workStr = str.trimmed();
 	if (!workStr.startsWith("#!"))
 		return notControlType;
@@ -93,11 +104,13 @@ Interpreter::ControlStringType Interpreter::controlStringType(const QString& str
 	return notControlType;
 }
 
-bool Interpreter::isControlString(const QString& str) {
+bool Interpreter::isControlString(QString const &str) const
+{
 	return controlStringType(str) != notControlType ? true : false;
 }
 
-QPair<QString, QString> Interpreter::foreachStringParse(const QString& str) {
+QPair<QString, QString> Interpreter::foreachStringParse(QString const &str)
+{
 	QStringList strElements = str.split(' ');
 	strElements.removeAll("");
 
@@ -115,7 +128,8 @@ QPair<QString, QString> Interpreter::foreachStringParse(const QString& str) {
 	return QPair<QString, QString>(strElements.at(1), strElements.at(3));
 }
 
-QString Interpreter::forStringParse(const QString& str) {
+QString Interpreter::forStringParse(QString const &str)
+{
 	QStringList strElements = str.split(' ');
 	strElements.removeAll("");
 
@@ -134,7 +148,8 @@ QString Interpreter::forStringParse(const QString& str) {
 	return strElements.at(1);
 }
 
-QString Interpreter::toFileStringFilename(const QString& str) {
+QString Interpreter::toFileStringFilename(QString const &str)
+{
 	QStringList strElements = str.split(' ');
 	strElements.removeAll("");
 
@@ -147,7 +162,8 @@ QString Interpreter::toFileStringFilename(const QString& str) {
 	return notControlStringParse(strElements[1]);
 }
 
-QString Interpreter::switchStringParse(const QString& str) {
+QString Interpreter::switchStringParse(QString const &str)
+{
 	QStringList strElements = str.split(' ');
 	
 	if ( (strElements.length() != 2) || 
@@ -159,7 +175,8 @@ QString Interpreter::switchStringParse(const QString& str) {
 	return strElements[1].trimmed();
 }
 
-QString Interpreter::caseStringParse(const QString& str) {
+QString Interpreter::caseStringParse(QString const &str)
+{
 	QStringList strElements = str.split(' ');
 
 	if (controlStringType(strElements[0]) != caseType) {
@@ -182,16 +199,18 @@ QString Interpreter::caseStringParse(const QString& str) {
 	return caseValue.mid(firstApostoIndex + 1, lastApostoIndex - firstApostoIndex - 1);
 }
 
-QString Interpreter::saveObjLabel(const QString& str) {
+QString Interpreter::saveObjLabel(QString const &str)
+{
 	return str.mid(9).trimmed();//object label
 }
 
-void Interpreter::addLabel(const QString& str) {
-	objectsByLabels.insert(str, getCurObjId());
+void Interpreter::addLabel(QString const& str) {
+	mObjectsByLabels.insert(str, getCurObjId());
 }
 
 //Для обращения к методу elementsByType передается "elementsByType(__type_name__)"
-qReal::IdList Interpreter::getCurObjectMethodResultList(const QString& methodName) {
+IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
+{
 	if (methodName == "children")
 		return rApi.children(getCurObjId());
 
@@ -235,18 +254,19 @@ qReal::IdList Interpreter::getCurObjectMethodResultList(const QString& methodNam
 			elementsType = methodName.mid(leftParenthesisPos + 1,
 					rightParenthesisPos - leftParenthesisPos - 1);
 		else
-			return qReal::IdList();
+			return IdList();
 
 		//return rApi.elementsByType(elementsType);
-		return rApi.logicalElements(qReal::Id("", "", elementsType, ""));
+		return rApi.logicalElements(Id("", "", elementsType, ""));
 	}
 
 	qDebug() << "Error! Uses unknown RepoApi list method!";
 
-	return qReal::IdList();
+	return IdList();
 }
 
-qReal::Id Interpreter::getCurObjectMethodResult(const QString& methodName) {	
+Id Interpreter::getCurObjectMethodResult(QString const &methodName)
+{	
 	if (methodName == "parent")
 		return rApi.parent(getCurObjId());
 
@@ -256,14 +276,15 @@ qReal::Id Interpreter::getCurObjectMethodResult(const QString& methodName) {
 	if (methodName == "from")
 		return rApi.from(getCurObjId());
 
-	return qReal::Id();
+	return Id();
 }
 
-QString Interpreter::notControlStringParse(const QString& parsingStr) {
+QString Interpreter::notControlStringParse(QString const &parsingStr)
+{
 	//Обработка @@_smth_@@
 	QStringList listOfSplitting = parsingStr.split("@@");
 	if (listOfSplitting.length() % 2 == 0) {
-		qDebug() << "problem with number of @@ in task" << taskFile.fileName();
+		qDebug() << "problem with number of @@ in task" << mTaskFile.fileName();
 		return "";
 	}
 
@@ -283,7 +304,8 @@ QString Interpreter::notControlStringParse(const QString& parsingStr) {
 	return resultStr;
 }
 
-QString Interpreter::getBraceBlock(QTextStream& stream) {
+QString Interpreter::getBraceBlock(QTextStream& stream)
+{
 	QString resultStr;
 
 	QString curLine = stream.readLine();
@@ -313,7 +335,8 @@ QString Interpreter::getBraceBlock(QTextStream& stream) {
 	return resultStr;
 }
 
-QPair<QString, QString> Interpreter::getNextCaseBlock(QTextStream& stream) {
+QPair<QString, QString> Interpreter::getNextCaseBlock(QTextStream& stream)
+{
 	if (stream.atEnd())
 		return QPair<QString, QString>();
 
@@ -331,7 +354,8 @@ QPair<QString, QString> Interpreter::getNextCaseBlock(QTextStream& stream) {
 	return QPair<QString, QString>(caseStringParse(caseStr), interpret( caseBlockStream ));
 }
 
-QString Interpreter::controlStringParse(const QString& parsingStr, QTextStream& stream) {
+QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& stream)
+{
 	switch (controlStringType(parsingStr)) {
 		case commentType:
 			return "";
@@ -343,20 +367,20 @@ QString Interpreter::controlStringParse(const QString& parsingStr, QTextStream& 
 				QString resultStr;
 
 				QPair<QString, QString> elemAndListNames = foreachStringParse(parsingStr);
-				qReal::Id objectId = getCurObjId();//TODO: change this method
+				Id objectId = getCurObjId();//TODO: change this method
 
 				// Здесь развертка foreach
-				foreach (qReal::Id element, getCurObjectMethodResultList(elemAndListNames.second)) {
+				foreach (Id element, getCurObjectMethodResultList(elemAndListNames.second)) {
 					if (elemAndListNames.first == "." || element.element() == elemAndListNames.first) {
-						//обновление curObjectId
-						curObjectId = element;
+						//обновление mCurrentObjectId
+						mCurrentObjectId = element;
 						resultStr += interpret(foreachBlockStream);
 						
 						foreachBlockStream.seek(0);
 					}
 				}
 				
-				curObjectId = objectId;//TODO: change this method
+				mCurrentObjectId = objectId;//TODO: change this method
 
 				return resultStr;
 			}
@@ -368,25 +392,25 @@ QString Interpreter::controlStringParse(const QString& parsingStr, QTextStream& 
 				QString resultStr;
 
 				QString methodName = forStringParse(parsingStr);
-				qReal::Id objectId = getCurObjId();//TODO: change this method
+				Id objectId = getCurObjId();//TODO: change this method
 
-				curObjectId = getCurObjectMethodResult(methodName);
+				mCurrentObjectId = getCurObjectMethodResult(methodName);
 				resultStr += interpret(forBlockStream);
 				
-				curObjectId = objectId;//TODO: change this method
+				mCurrentObjectId = objectId;//TODO: change this method
 
 				return resultStr;
 			}
 
 		case leftBraceType:			
 			{
-				qDebug() << "Error! In" << taskFile.fileName() << ". #!{ but not control expression (e.g. #!foreach) found!";
+				qDebug() << "Error! In" << mTaskFile.fileName() << ". #!{ but not control expression (e.g. #!foreach) found!";
 				return "";
 			}
 
 		case rightBraceType:
 			{
-				qDebug() << "Error! In" << taskFile.fileName() << ". #!} but not control expression (e.g. #!foreach) found!";
+				qDebug() << "Error! In" << mTaskFile.fileName() << ". #!} but not control expression (e.g. #!foreach) found!";
 				return "";
 			}
 		case toFileType:
@@ -450,7 +474,8 @@ QString Interpreter::controlStringParse(const QString& parsingStr, QTextStream& 
 	return "";
 }
 
-QString Interpreter::interpret(QTextStream& stream) {
+QString Interpreter::interpret(QTextStream& stream)
+{
 	QString resultStr;
 
 	while (!stream.atEnd()) {
@@ -469,25 +494,26 @@ QString Interpreter::interpret(QTextStream& stream) {
 	return resultStr;
 }
 
-QString Interpreter::interpret() {
-	if (!taskFile.isOpen() && taskFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		inStream = new QTextStream(&taskFile);
+QString Interpreter::interpret()
+{
+	if (!mTaskFile.isOpen() && mTaskFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		mInStream = new QTextStream(&mTaskFile);
 	}
 	
-	if (!taskFile.isOpen() || inStream == 0){
-		qDebug() << "cannot load file \"" << taskFile.fileName() << "\"";
+	if (!mTaskFile.isOpen() || mInStream == 0){
+		qDebug() << "cannot load file \"" << mTaskFile.fileName() << "\"";
 		return "";
 	}
-	inStream->seek(0); //for second execute of interpret
+	mInStream->seek(0); //for second execute of interpret
 
 	QString curStr;
-	curStr = inStream->readLine();
+	curStr = mInStream->readLine();
 	if (!curStr.startsWith("Task ")) {
-		qDebug() << "Task file" << taskFile.fileName() << "doesn't start with \"Task __name__\"";
+		qDebug() << "Task file" << mTaskFile.fileName() << "doesn't start with \"Task __name__\"";
 		return "";
 	}
 
 	QString taskName = curStr.right(curStr.length() - 5); //5 - "Task " length;
 
-	return interpret(*inStream);
+	return interpret(*mInStream);
 }

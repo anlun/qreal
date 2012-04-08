@@ -5,20 +5,22 @@
 #include <QTextStream>
 #include <QMap>
 
-namespace Geny {
-	class Gemake {
-		public:
-			Gemake(QString gemakeFilename);
-			~Gemake();
+namespace genyInterpreter {
 
-			bool init();
-			void make();
-			QString getTaskFilename(const QString& taskName);
+class Gemake {
+public:
+	Gemake(QString const &gemakeFilename);
+	~Gemake();
 
-		private:
-			QFile makeFile;
-			QMap<QString, QString> *filesByTasks;
-			QTextStream* inStream;
-			QString repoPath;
-	};
+	bool init();
+	void make();
+	QString getTaskFilename(QString const &taskName) const;
+
+private:
+	QFile mMakeFile;
+	QMap<QString, QString> *mFilesByTasks;
+	QTextStream* mInStream;
+	QString mRepoPath;
+};
+
 }
