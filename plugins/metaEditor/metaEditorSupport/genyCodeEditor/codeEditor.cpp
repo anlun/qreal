@@ -330,7 +330,7 @@ bool CodeEditor::saveFile(QString const &fileName)
 
 	QTextStream out(&file);
 	//QApplication::setOverrideCursor(Qt::WaitCursor);
-	out << currentCodeArea()->toPlainText();
+	out << currentCodeArea()->toFileSaveString();
 	//QApplication::restoreOverrideCursor();
 	
 	setCurrentFile(fileName);

@@ -398,3 +398,23 @@ void CodeArea::setConnectedFileName(QString const &newFileName)
 {
 	mFileName = newFileName;
 }
+
+QString CodeArea::toFileSaveString()
+{
+	QString result;
+
+	QTextBlock block = document()->firstBlock();
+	while (block.isValid()) {
+		QString text = block.text();
+
+		if (mControlBlocks.contains(block)) {
+			text = "#!" + text.trimmed();
+		}
+
+		result += text + "\n";
+
+		block = block.next();
+	}
+	
+	return result;
+}

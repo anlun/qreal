@@ -42,6 +42,8 @@ public:
 	void setConnectedFileName(QString const &newFileName);
 	QString connectedFileName();
 
+	QString toFileSaveString();
+
 protected:
 	void keyPressEvent(QKeyEvent* e);
 	void focusInEvent(QFocusEvent* e);
