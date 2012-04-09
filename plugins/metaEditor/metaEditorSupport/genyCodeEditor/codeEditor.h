@@ -39,6 +39,7 @@ class CodeEditor : public QMainWindow {
 		void toggleControlLineVisible();
 
 		void currentTabChanged(int index);
+		void tabCloseRequested(int index);
 
 	private:
 		void initCompleter();

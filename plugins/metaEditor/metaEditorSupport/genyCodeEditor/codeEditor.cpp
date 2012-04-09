@@ -24,6 +24,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mCompleter(0)
 {
 	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+	mCodeAreaTab.setTabsClosable(true);
 
 	//setCentralWidget(&mCodeArea);
 	setCentralWidget(&mCodeAreaTab);
@@ -31,6 +32,11 @@ CodeEditor::CodeEditor(QWidget *parent)
 	initCompleter();
 	createActions();
 	createMenus();
+
+	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) )
+			, this, SLOT( currentTabChanged(int) ));
+	connect(&mCodeAreaTab, SIGNAL( tabCloseRequested(int) )
+			, this, SLOT( tabCloseRequested(int) ));
 }
 
 CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
@@ -46,6 +52,7 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	, mCompleter(0)
 {
 	mCodeAreaTab.addTab(new CodeArea, QFileInfo(fileName).fileName());
+	mCodeAreaTab.setTabsClosable(true);
 
 	setCentralWidget(&mCodeAreaTab);
 
@@ -57,6 +64,8 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 
 	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) )
 			, this, SLOT( currentTabChanged(int) ));
+	connect(&mCodeAreaTab, SIGNAL( tabCloseRequested(int) )
+			, this, SLOT( tabCloseRequested(int) ));
 }
 
 CodeEditor::~CodeEditor()
@@ -352,4 +361,22 @@ void CodeEditor::toggleControlLineVisible()
 void CodeEditor::currentTabChanged(int)
 {
 	currentCodeArea()->setCompleter(mCompleter);
+}
+
+void CodeEditor::tabCloseRequested(int index)
+{
+	int const currentTabIndex = mCodeAreaTab.currentIndex();
+	mCodeAreaTab.setCurrentIndex(index);
+	maybeSave();
+
+	if (currentTabIndex != index) {
+		mCodeAreaTab.setCurrentIndex(currentTabIndex);
+		return;
+	}
+
+	if (mCodeAreaTab.count() == 1) {
+		mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+	}
+
+	mCodeAreaTab.removeTab(index);
 }
