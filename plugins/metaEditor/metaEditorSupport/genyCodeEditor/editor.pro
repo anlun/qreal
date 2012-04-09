@@ -14,6 +14,9 @@ HEADERS += \
 	syntaxHighlighter.h \
 	lineNumberArea.h
 
+HEADERS += \
+	projectInfo.h
+
 SOURCES += \
 	codeArea.cpp \
 	codeEditor.cpp \

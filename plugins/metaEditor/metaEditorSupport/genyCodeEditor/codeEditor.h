@@ -11,6 +11,7 @@
 #include <QTabWidget>
 
 #include "codeArea.h"
+#include "projectInfo.h"
 
 namespace qReal {
 namespace genyCodeEditor {
@@ -18,60 +19,66 @@ namespace genyCodeEditor {
 class CodeEditor : public QMainWindow {
 	Q_OBJECT
 
-	public:
-		CodeEditor(QWidget *parent = 0);
-		CodeEditor(QString const &fileName, QWidget *parent = 0);
-		~CodeEditor();
+public:
+	CodeEditor(QWidget *parent = 0);
 
-		void setHighlightedLineNumbers(QList<int> const &lineNumbers);
+	CodeEditor(
+			QString const &gemakeFileName //< gemakeFileName - path to Geny make file
+			, QWidget *parent = 0
+		);
+	~CodeEditor();
 
-	//protected:
-	//	void closeEvent(QCloseEvent* event);
+	void setHighlightedLineNumbers(QList<int> const &lineNumbers);
 
-	private slots:
-		void newFile();
-		void open();
-		bool save();
-		bool saveAs();
-		void documentWasModified();
+//protected:
+//	void closeEvent(QCloseEvent* event);
 
-		void toggleHighlightedLineType();
-		void toggleControlLineVisible();
+private slots:
+	void newFile();
+	void open();
+	bool save();
+	bool saveAs();
+	void documentWasModified();
 
-		void currentTabChanged(int index);
-		void tabCloseRequested(int index);
+	void toggleHighlightedLineType();
+	void toggleControlLineVisible();
 
-	private:
-		void initCompleter();
-		void createActions();
-		void createMenus();
+	void currentTabChanged(int index);
+	void tabCloseRequested(int index);
 
-		bool maybeSave();
-		
-		void loadFile(QString const &fileName);
-		bool saveFile(QString const &fileName);
+private:
+	void initCompleter();
+	void createActions();
+	void createMenus();
 
-		void setCurrentFile(QString const &fileName);
+	bool maybeSave();
+	
+	void loadFile(QString const &fileName);
+	bool saveFile(QString const &fileName);
 
-		/// Returns current active in tabs CodeArea
-		CodeArea* currentCodeArea();
+	void setCurrentFile(QString const &fileName);
 
-		//QAbstractItemModel* modelFromFile(QString const &fileName);
-		QStringListModel* modelFromFile(QString const &fileName);
+	/// Returns current active in tabs CodeArea
+	CodeArea* currentCodeArea();
 
-		QAction* mNewAct;
-		QAction* mOpenAct;
-		QAction* mSaveAct;
-		QAction* mSaveAsAct;
+	//QAbstractItemModel* modelFromFile(QString const &fileName);
+	QStringListModel* modelFromFile(QString const &fileName);
 
-		QAction* mToggleHighlightedLineTypeAct;
-		QAction* mToggleControlLineVisibleAct;
+	QAction* mNewAct;
+	QAction* mOpenAct;
+	QAction* mSaveAct;
+	QAction* mSaveAsAct;
 
-		QMenu* mFileMenu;
-		QMenu* mViewMenu;
+	QAction* mToggleHighlightedLineTypeAct;
+	QAction* mToggleControlLineVisibleAct;
 
-		QTabWidget mCodeAreaTab;
-		QCompleter* mCompleter;
+	QMenu* mFileMenu;
+	QMenu* mViewMenu;
+
+	QTabWidget mCodeAreaTab;
+	QCompleter* mCompleter;
+
+	ProjectInfo mCurrentProject;
 };
 
 }

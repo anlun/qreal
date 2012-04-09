@@ -26,7 +26,6 @@ CodeEditor::CodeEditor(QWidget *parent)
 	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
 	mCodeAreaTab.setTabsClosable(true);
 
-	//setCentralWidget(&mCodeArea);
 	setCentralWidget(&mCodeAreaTab);
 	
 	initCompleter();
@@ -39,7 +38,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 			, this, SLOT( tabCloseRequested(int) ));
 }
 
-CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
+CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(0)
 	, mOpenAct(0)
@@ -51,12 +50,12 @@ CodeEditor::CodeEditor(QString const &fileName, QWidget *parent)
 	, mViewMenu(0)
 	, mCompleter(0)
 {
-	mCodeAreaTab.addTab(new CodeArea, QFileInfo(fileName).fileName());
+	//mCodeAreaTab.addTab(new CodeArea, QFileInfo(gemakeFileName).fileName());
 	mCodeAreaTab.setTabsClosable(true);
 
 	setCentralWidget(&mCodeAreaTab);
 
-	loadFile(fileName);
+	//loadFile(gemakeFileName);
 	
 	initCompleter();
 	createActions();
@@ -179,7 +178,6 @@ void CodeEditor::createMenus()
 void CodeEditor::setHighlightedLineNumbers(QList<int> const &lineNumbers)
 {
 	currentCodeArea()->setHighlightedLineNumbers(lineNumbers);
-	//mCodeArea.setHighlightedLineNumbers(lineNumbers); //TODO
 }
 
 //QAbstractItemModel* CodeEditor::modelFromFile(QString const &fileName)
@@ -304,16 +302,12 @@ void CodeEditor::loadFile(QString const &fileName)
 			index = controlInsertionRegExp.indexIn(curLine, index + length);
 		}
 
-		//mCodeArea.appendPlainText(curLine);
 		//mCodeArea.appendHtml(curLine);
 		currentCodeArea()->appendHtml(curLine);
 		
 		curLineNumber++;
 	}
-	//mCodeArea.addBlockToHighlightNumbers(blockToHighlightNumbers);
 	currentCodeArea()->addBlockToHighlightNumbers(blockToHighlightNumbers);
-
-	//mCodeArea.alignControlLines();
 	currentCodeArea()->alignControlLines();
 
 	setCurrentFile(fileName);
@@ -348,13 +342,11 @@ bool CodeEditor::saveFile(QString const &fileName)
 
 void CodeEditor::toggleHighlightedLineType()
 {
-	//mCodeArea.toggleHighlightedLineType();
 	currentCodeArea()->toggleHighlightedLineType();
 }
 
 void CodeEditor::toggleControlLineVisible()
 {
-	//mCodeArea.toggleControlLineVisible();
 	currentCodeArea()->toggleControlLineVisible();
 }
 
