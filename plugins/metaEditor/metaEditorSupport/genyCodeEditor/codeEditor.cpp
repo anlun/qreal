@@ -371,12 +371,12 @@ void CodeEditor::tabCloseRequested(int index)
 
 	if (currentTabIndex != index) {
 		mCodeAreaTab.setCurrentIndex(currentTabIndex);
+		mCodeAreaTab.removeTab(index);
 		return;
 	}
 
 	if (mCodeAreaTab.count() == 1) {
 		mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
 	}
-
 	mCodeAreaTab.removeTab(index);
 }
