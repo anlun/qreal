@@ -6,6 +6,8 @@
 #include <QCursor>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDir>
+
 #include "codeEditor.h"
 
 using namespace qReal;
@@ -17,6 +19,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mOpenAct(0)
 	, mSaveAct(0)
 	, mSaveAsAct(0)
+	, mSaveToModelAct(0)
 	, mToggleHighlightedLineTypeAct(0)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
@@ -44,6 +47,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	, mOpenAct(0)
 	, mSaveAct(0)
 	, mSaveAsAct(0)
+	, mSaveToModelAct(0)
 	, mToggleHighlightedLineTypeAct(0)
 	, mToggleControlLineVisibleAct(0)
 	, mFileMenu(0)
@@ -102,6 +106,11 @@ CodeEditor::~CodeEditor()
 		delete mSaveAsAct;
 	}
 	mSaveAsAct = 0;
+
+	if (mSaveToModelAct) {
+		delete mSaveToModelAct;
+	}
+	mSaveToModelAct = 0;
 
 	if (mFileMenu) {
 		delete mFileMenu;
@@ -162,6 +171,10 @@ void CodeEditor::createActions()
 	mSaveAsAct->setStatusTip(tr("Save the document under a new name"));
 	connect(mSaveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
+	mSaveToModelAct = new QAction(tr("Save to model"), this);
+	mSaveToModelAct->setStatusTip(tr("Save Geny project to model"));
+	connect(mSaveToModelAct, SIGNAL(triggered()), this, SLOT(saveToModel()));
+
 	mToggleHighlightedLineTypeAct = new QAction(tr("Switch line highlighting"), this);
 	mToggleHighlightedLineTypeAct->setStatusTip(tr("Toggle highlighting beetwen control and not lines"));
 	connect(mToggleHighlightedLineTypeAct, SIGNAL(triggered()), this, SLOT(toggleHighlightedLineType()));
@@ -178,6 +191,7 @@ void CodeEditor::createMenus()
 	mFileMenu->addAction(mOpenAct);
 	mFileMenu->addAction(mSaveAct);
 	mFileMenu->addAction(mSaveAsAct);
+	mFileMenu->addAction(mSaveToModelAct);
 	
 	mViewMenu = menuBar()->addMenu(tr("View"));
 	mViewMenu->addAction(mToggleHighlightedLineTypeAct);
@@ -272,6 +286,28 @@ void CodeEditor::documentWasModified()
 {
 	//setWindowModified(mCodeArea.document()->isModified());
 	setWindowModified(currentCodeArea()->document()->isModified());
+}
+
+bool CodeEditor::saveToModel()
+{
+	QString projectFolder = "Geny_Project_Model";
+	if (!QDir(projectFolder).exists()) {
+		QDir().mkdir(projectFolder);
+	}
+
+	QFile gemakeFile(projectFolder + "/" + "gemakefile");
+	if (!gemakeFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+		qDebug() << "Can't create gemakefile!";
+		return false;
+	}
+
+	QTextStream gemakeFileStream(&gemakeFile);
+	gemakeFileStream << ".\n\n";
+	foreach (QString const &fileName, mProject.includedFileNames()) {
+		gemakeFileStream << fileName + "\n";
+	}
+
+	return true;
 }
 
 void CodeEditor::loadFile(QString const &fileName)

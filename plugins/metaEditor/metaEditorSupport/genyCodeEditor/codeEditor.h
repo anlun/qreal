@@ -38,6 +38,7 @@ private slots:
 	void open();
 	bool save();
 	bool saveAs();
+	bool saveToModel();
 	void documentWasModified();
 
 	void toggleHighlightedLineType();
@@ -68,6 +69,7 @@ private:
 	QAction* mOpenAct;
 	QAction* mSaveAct;
 	QAction* mSaveAsAct;
+	QAction* mSaveToModelAct;
 
 	QAction* mToggleHighlightedLineTypeAct;
 	QAction* mToggleControlLineVisibleAct;
