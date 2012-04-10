@@ -1,6 +1,11 @@
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
+
 #include "projectInfo.h"
+
+using namespace qReal;
+using namespace genyCodeEditor;
 
 ProjectInfo::ProjectInfo()
 {
@@ -8,7 +13,7 @@ ProjectInfo::ProjectInfo()
 
 ProjectInfo::ProjectInfo(QString const &gemakeFile)
 {
-	setGemakeFileName(gemakeFile);
+	init(gemakeFile);
 }
 
 QString ProjectInfo::gemakeFileName() const
@@ -21,18 +26,18 @@ QString ProjectInfo::repoPath() const
 	return mRepoPath;
 }
 
-QList<QString> ProjectInfo::mIncludedFileNames() const
+QList<QString> ProjectInfo::includedFileNames() const
 {
 	return mIncludedFileNames;
 }
 
-bool ProjectInfo::setGemakeFileName(QString const &newGemakeFileName)
+bool ProjectInfo::init(QString const &newGemakeFileName)
 {
-	mGemakeFileName = arg;
+	mGemakeFileName = newGemakeFileName;
 	mIncludedFileNames.clear();
 	mRepoPath = "";
 
-	QFile gemakeFile;
+	QFile gemakeFile(mGemakeFileName);
 	QTextStream* inStream;
 
 	if (!gemakeFile.isOpen()

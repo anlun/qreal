@@ -10,12 +10,12 @@ class ProjectInfo {
 public:
 	ProjectInfo();
 	ProjectInfo(QString const &gemakeFileName);
+	
+	bool init(QString const &newGemakeFileName);
 
 	QString gemakeFileName() const;
-	bool setGemakeFileName(QString const &newGemakeFileName);
-
 	QString repoPath() const;
-	QList<QString> mIncludedFileNames() const;
+	QList<QString> includedFileNames() const;
 
 private:
 	QList<QString> mIncludedFileNames;

@@ -78,7 +78,7 @@ private:
 	QTabWidget mCodeAreaTab;
 	QCompleter* mCompleter;
 
-	ProjectInfo mCurrentProject;
+	ProjectInfo mProject;
 };
 
 }

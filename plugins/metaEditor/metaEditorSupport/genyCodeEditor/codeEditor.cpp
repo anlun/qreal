@@ -53,9 +53,18 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	//mCodeAreaTab.addTab(new CodeArea, QFileInfo(gemakeFileName).fileName());
 	mCodeAreaTab.setTabsClosable(true);
 
-	setCentralWidget(&mCodeAreaTab);
+	if (mProject.init(gemakeFileName)) {
+		foreach (QString const &filePath, mProject.includedFileNames()) {
+			int currentTab = 
+				mCodeAreaTab.addTab(new CodeArea, QFileInfo(filePath).fileName());
+			mCodeAreaTab.setCurrentIndex(currentTab);
+			loadFile(filePath);
+		}
+	} else {
+		//TODO
+	}
 
-	//loadFile(gemakeFileName);
+	setCentralWidget(&mCodeAreaTab);
 	
 	initCompleter();
 	createActions();
