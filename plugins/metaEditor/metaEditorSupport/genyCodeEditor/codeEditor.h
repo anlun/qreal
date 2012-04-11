@@ -36,7 +36,7 @@ public:
 private slots:
 	void newFile();
 	void open();
-	void openProject();
+	//void openProject();
 	bool save();
 	bool saveAs();
 	bool saveToModel();
@@ -50,7 +50,7 @@ private slots:
 
 private:
 	void initCompleter();
-	void createActions();
+	void initActions();
 	void createMenus();
 
 	bool maybeSave();
@@ -66,14 +66,14 @@ private:
 	//QAbstractItemModel* modelFromFile(QString const &fileName);
 	QStringListModel* modelFromFile(QString const &fileName);
 
-	QAction* mNewAct;
-	QAction* mOpenAct;
-	QAction* mSaveAct;
-	QAction* mSaveAsAct;
-	QAction* mSaveToModelAct;
+	QAction mNewAct;
+	QAction mOpenAct;
+	QAction mSaveAct;
+	QAction mSaveAsAct;
+	QAction mSaveToModelAct;
 
-	QAction* mToggleHighlightedLineTypeAct;
-	QAction* mToggleControlLineVisibleAct;
+	QAction mToggleHighlightedLineTypeAct;
+	QAction mToggleControlLineVisibleAct;
 
 	QMenu* mFileMenu;
 	QMenu* mViewMenu;

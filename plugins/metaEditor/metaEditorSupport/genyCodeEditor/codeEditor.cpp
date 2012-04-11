@@ -15,13 +15,13 @@ using namespace genyCodeEditor;
 
 CodeEditor::CodeEditor(QWidget *parent)
 	: QMainWindow(parent)
-	, mNewAct(0)
-	, mOpenAct(0)
-	, mSaveAct(0)
-	, mSaveAsAct(0)
-	, mSaveToModelAct(0)
-	, mToggleHighlightedLineTypeAct(0)
-	, mToggleControlLineVisibleAct(0)
+	, mNewAct(this)
+	, mOpenAct(this)
+	, mSaveAct(this)
+	, mSaveAsAct(this)
+	, mSaveToModelAct(this)
+	, mToggleHighlightedLineTypeAct(this)
+	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
 	, mCompleter(0)
@@ -32,7 +32,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	setCentralWidget(&mCodeAreaTab);
 	
 	initCompleter();
-	createActions();
+	initActions();
 	createMenus();
 
 	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) )
@@ -43,13 +43,13 @@ CodeEditor::CodeEditor(QWidget *parent)
 
 CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	: QMainWindow(parent)
-	, mNewAct(0)
-	, mOpenAct(0)
-	, mSaveAct(0)
-	, mSaveAsAct(0)
-	, mSaveToModelAct(0)
-	, mToggleHighlightedLineTypeAct(0)
-	, mToggleControlLineVisibleAct(0)
+	, mNewAct(this)
+	, mOpenAct(this)
+	, mSaveAct(this)
+	, mSaveAsAct(this)
+	, mSaveToModelAct(this)
+	, mToggleHighlightedLineTypeAct(this)
+	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
 	, mCompleter(0)
@@ -71,7 +71,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	setCentralWidget(&mCodeAreaTab);
 	
 	initCompleter();
-	createActions();
+	initActions();
 	createMenus();
 
 	connect(&mCodeAreaTab, SIGNAL( currentChanged(int) )
@@ -87,45 +87,10 @@ CodeEditor::~CodeEditor()
 	}
 	mCompleter = 0;
 
-	if (mNewAct) {
-		delete mNewAct;
-	}
-	mNewAct = 0;
-
-	if (mOpenAct) {
-		delete mOpenAct;
-	}
-	mOpenAct = 0;
-
-	if (mSaveAct) {
-		delete mSaveAct;
-	}
-	mSaveAct = 0;
-
-	if (mSaveAsAct) {
-		delete mSaveAsAct;
-	}
-	mSaveAsAct = 0;
-
-	if (mSaveToModelAct) {
-		delete mSaveToModelAct;
-	}
-	mSaveToModelAct = 0;
-
 	if (mFileMenu) {
 		delete mFileMenu;
 	}
 	mFileMenu = 0;
-
-	if (mToggleHighlightedLineTypeAct) {
-		delete mToggleHighlightedLineTypeAct;
-	}
-	mToggleHighlightedLineTypeAct = 0;
-
-	if (mToggleControlLineVisibleAct) {
-		delete mToggleControlLineVisibleAct;
-	}
-	mToggleControlLineVisibleAct = 0;
 
 	if (mViewMenu) {
 		delete mViewMenu;
@@ -153,49 +118,49 @@ void CodeEditor::initCompleter()
 	currentCodeArea()->setCompleter(mCompleter);
 }
 
-void CodeEditor::createActions()
+void CodeEditor::initActions()
 {	
-	mNewAct = new QAction(tr("New"), this);
-	mNewAct->setStatusTip(tr("Create a new file"));
-	connect(mNewAct, SIGNAL(triggered()), this, SLOT(newFile()));
+	mNewAct.setText(tr("New"));
+	mNewAct.setStatusTip(tr("Create a new file"));
+	connect(&mNewAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
-	mOpenAct = new QAction(tr("Open"), this);
-	mOpenAct->setStatusTip(tr("Open an existing file"));
-	connect(mOpenAct, SIGNAL(triggered()), this, SLOT(open()));
+	mOpenAct.setText(tr("Open"));
+	mOpenAct.setStatusTip(tr("Open an existing file"));
+	connect(&mOpenAct, SIGNAL(triggered()), this, SLOT(open()));
 
-	mSaveAct = new QAction(tr("Save"), this);
-	mSaveAct->setStatusTip(tr("Save the document to disk"));
-	connect(mSaveAct, SIGNAL(triggered()), this, SLOT(save()));
+	mSaveAct.setText(tr("Save"));
+	mSaveAct.setStatusTip(tr("Save the document to disk"));
+	connect(&mSaveAct, SIGNAL(triggered()), this, SLOT(save()));
 
-	mSaveAsAct = new QAction(tr("Save As"), this);
-	mSaveAsAct->setStatusTip(tr("Save the document under a new name"));
-	connect(mSaveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
+	mSaveAsAct.setText(tr("Save As"));
+	mSaveAsAct.setStatusTip(tr("Save the document under a new name"));
+	connect(&mSaveAsAct, SIGNAL(triggered()), this, SLOT(saveAs()));
 
-	mSaveToModelAct = new QAction(tr("Save to model"), this);
-	mSaveToModelAct->setStatusTip(tr("Save Geny project to model"));
-	connect(mSaveToModelAct, SIGNAL(triggered()), this, SLOT(saveToModel()));
+	mSaveToModelAct.setText(tr("Save to model"));
+	mSaveToModelAct.setStatusTip(tr("Save Geny project to model"));
+	connect(&mSaveToModelAct, SIGNAL(triggered()), this, SLOT(saveToModel()));
 
-	mToggleHighlightedLineTypeAct = new QAction(tr("Switch line highlighting"), this);
-	mToggleHighlightedLineTypeAct->setStatusTip(tr("Toggle highlighting beetwen control and not lines"));
-	connect(mToggleHighlightedLineTypeAct, SIGNAL(triggered()), this, SLOT(toggleHighlightedLineType()));
+	mToggleHighlightedLineTypeAct.setText(tr("Switch line highlighting"));
+	mToggleHighlightedLineTypeAct.setStatusTip(tr("Toggle highlighting beetwen control and not lines"));
+	connect(&mToggleHighlightedLineTypeAct, SIGNAL(triggered()), this, SLOT(toggleHighlightedLineType()));
 
-	mToggleControlLineVisibleAct = new QAction(tr("Switch control line visibility"), this);
-	mToggleControlLineVisibleAct->setStatusTip(tr("Show/unshow control lines"));
-	connect(mToggleControlLineVisibleAct, SIGNAL(triggered()), this, SLOT(toggleControlLineVisible()));
+	mToggleControlLineVisibleAct.setText(tr("Switch control line visibility"));
+	mToggleControlLineVisibleAct.setStatusTip(tr("Show/unshow control lines"));
+	connect(&mToggleControlLineVisibleAct, SIGNAL(triggered()), this, SLOT(toggleControlLineVisible()));
 }
 
 void CodeEditor::createMenus()
 {
 	mFileMenu = menuBar()->addMenu(tr("File"));
-	mFileMenu->addAction(mNewAct);
-	mFileMenu->addAction(mOpenAct);
-	mFileMenu->addAction(mSaveAct);
-	mFileMenu->addAction(mSaveAsAct);
-	mFileMenu->addAction(mSaveToModelAct);
+	mFileMenu->addAction(&mNewAct);
+	mFileMenu->addAction(&mOpenAct);
+	mFileMenu->addAction(&mSaveAct);
+	mFileMenu->addAction(&mSaveAsAct);
+	mFileMenu->addAction(&mSaveToModelAct);
 	
 	mViewMenu = menuBar()->addMenu(tr("View"));
-	mViewMenu->addAction(mToggleHighlightedLineTypeAct);
-	mViewMenu->addAction(mToggleControlLineVisibleAct);
+	mViewMenu->addAction(&mToggleHighlightedLineTypeAct);
+	mViewMenu->addAction(&mToggleControlLineVisibleAct);
 }
 
 void CodeEditor::setHighlightedLineNumbers(QList<int> const &lineNumbers)
