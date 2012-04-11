@@ -36,6 +36,7 @@ public:
 private slots:
 	void newFile();
 	void open();
+	void openProject();
 	bool save();
 	bool saveAs();
 	bool saveToModel();

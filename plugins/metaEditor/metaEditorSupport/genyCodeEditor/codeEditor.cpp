@@ -307,6 +307,12 @@ bool CodeEditor::saveToModel()
 		gemakeFileStream << fileName + "\n";
 	}
 
+	//TODO smth about special cases :-)
+	foreach (QString const &includedFileName, mProject.includedFileNames()) {
+		QFile(includedFileName).copy(projectFolder + "/"
+				+ QFileInfo(includedFileName).fileName());
+	}
+
 	return true;
 }
 
