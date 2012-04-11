@@ -17,6 +17,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(this)
 	, mOpenAct(this)
+	, mOpenProjectAct(this)
 	, mSaveAct(this)
 	, mSaveAsAct(this)
 	, mSaveToModelAct(this)
@@ -45,6 +46,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(this)
 	, mOpenAct(this)
+	, mOpenProjectAct(this)
 	, mSaveAct(this)
 	, mSaveAsAct(this)
 	, mSaveToModelAct(this)
@@ -128,6 +130,10 @@ void CodeEditor::initActions()
 	mOpenAct.setStatusTip(tr("Open an existing file"));
 	connect(&mOpenAct, SIGNAL(triggered()), this, SLOT(open()));
 
+	mOpenProjectAct.setText(tr("Open project"));
+	mOpenProjectAct.setStatusTip(tr("Open an existing Geny project"));
+	connect(&mOpenProjectAct, SIGNAL(triggered()), this, SLOT(openProject()));
+
 	mSaveAct.setText(tr("Save"));
 	mSaveAct.setStatusTip(tr("Save the document to disk"));
 	connect(&mSaveAct, SIGNAL(triggered()), this, SLOT(save()));
@@ -154,6 +160,7 @@ void CodeEditor::createMenus()
 	mFileMenu = menuBar()->addMenu(tr("File"));
 	mFileMenu->addAction(&mNewAct);
 	mFileMenu->addAction(&mOpenAct);
+	mFileMenu->addAction(&mOpenProjectAct);
 	mFileMenu->addAction(&mSaveAct);
 	mFileMenu->addAction(&mSaveAsAct);
 	mFileMenu->addAction(&mSaveToModelAct);
@@ -202,6 +209,11 @@ void CodeEditor::open()
 	mCodeAreaTab.setCurrentIndex(newTabIndex);
 	
 	loadFile(fileName);
+}
+
+void CodeEditor::openProject()
+{
+	//TODO
 }
 
 bool CodeEditor::save()

@@ -36,7 +36,7 @@ public:
 private slots:
 	void newFile();
 	void open();
-	//void openProject();
+	void openProject();
 	bool save();
 	bool saveAs();
 	bool saveToModel();
@@ -68,6 +68,7 @@ private:
 
 	QAction mNewAct;
 	QAction mOpenAct;
+	QAction mOpenProjectAct;
 	QAction mSaveAct;
 	QAction mSaveAsAct;
 	QAction mSaveToModelAct;
