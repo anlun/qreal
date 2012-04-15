@@ -46,6 +46,7 @@ private:
 	void setBoolValuesForContainer(QString const &propertyName, QDomElement &properties, qReal::Id const &id);
 	void setSizesForContainer(QString const &propertyName, QDomElement &properties, qReal::Id const &id);
 	static void copyImages(QString const &pathToFile);
+	static void copyGenyProject(QString const &pathToFile);
 
 	qrRepo::LogicalRepoApi const &mApi;
 	QDomDocument mDocument;

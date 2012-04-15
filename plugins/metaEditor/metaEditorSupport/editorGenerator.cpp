@@ -117,6 +117,7 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 	mDocument.clear();
 
 	copyImages(pathToFile);
+	copyGenyProject(pathToFile);
 }
 
 void EditorGenerator::copyImages(QString const &pathToFile)
@@ -132,6 +133,25 @@ void EditorGenerator::copyImages(QString const &pathToFile)
 	QDir destDir = destDirInfo.dir();
 	destDir.mkdir("images");
 	destDir.cd("images");
+
+	foreach (QString const &file, sourceDir.entryList(QDir::Files)) {
+		QFile::copy(sourceDir.absolutePath() + "/" + file, destDir.absolutePath() + "/" + file);
+	}
+}
+
+void EditorGenerator::copyGenyProject(QString const &pathToFile)
+{
+	QString const workingDirName = SettingsManager::value("workingDir", "./save").toString();
+	QDir sourceDir(workingDirName);
+	sourceDir.cd("genyProject");
+	if (!sourceDir.exists()) {
+		return;
+	}
+
+	QFileInfo const destDirInfo(pathToFile);
+	QDir destDir = destDirInfo.dir();
+	destDir.mkdir("genyProject");
+	destDir.cd("genyProject");
 
 	foreach (QString const &file, sourceDir.entryList(QDir::Files)) {
 		QFile::copy(sourceDir.absolutePath() + "/" + file, destDir.absolutePath() + "/" + file);

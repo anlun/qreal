@@ -76,6 +76,7 @@
 						<property type="string" name="include"/>
 						<property type="string" name="name of the directory"/>
 						<property type="string" name="relative path to QReal Source Files"/>
+						<property type="string" name="relative path to Geny project"/>
 					</properties>
 					<containers/>
 					<connections>
