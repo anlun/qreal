@@ -116,42 +116,23 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 	mDocument.save(outxml(), 4);
 	mDocument.clear();
 
-	copyImages(pathToFile);
-	copyGenyProject(pathToFile);
+	copyFiles(pathToFile, "images");
+	copyFiles(pathToFile, "genyProject");
 }
 
-void EditorGenerator::copyImages(QString const &pathToFile)
+void EditorGenerator::copyFiles(QString const &pathToFile, QString const &folderToCopyName)
 {
 	QString const workingDirName = SettingsManager::value("workingDir", "./save").toString();
 	QDir sourceDir(workingDirName);
-	sourceDir.cd("images");
+	sourceDir.cd(folderToCopyName);
 	if (!sourceDir.exists()) {
 		return;
 	}
 
 	QFileInfo const destDirInfo(pathToFile);
 	QDir destDir = destDirInfo.dir();
-	destDir.mkdir("images");
-	destDir.cd("images");
-
-	foreach (QString const &file, sourceDir.entryList(QDir::Files)) {
-		QFile::copy(sourceDir.absolutePath() + "/" + file, destDir.absolutePath() + "/" + file);
-	}
-}
-
-void EditorGenerator::copyGenyProject(QString const &pathToFile)
-{
-	QString const workingDirName = SettingsManager::value("workingDir", "./save").toString();
-	QDir sourceDir(workingDirName);
-	sourceDir.cd("genyProject");
-	if (!sourceDir.exists()) {
-		return;
-	}
-
-	QFileInfo const destDirInfo(pathToFile);
-	QDir destDir = destDirInfo.dir();
-	destDir.mkdir("genyProject");
-	destDir.cd("genyProject");
+	destDir.mkdir(folderToCopyName);
+	destDir.cd(folderToCopyName);
 
 	foreach (QString const &file, sourceDir.entryList(QDir::Files)) {
 		QFile::copy(sourceDir.absolutePath() + "/" + file, destDir.absolutePath() + "/" + file);
