@@ -463,8 +463,6 @@ IdList RepoApi::graphicalElements(Id const &type) const
 
 IdList RepoApi::logicalElements() const
 {
-	Q_ASSERT(type.idSize() == 3);
-
 	IdList result;
 	foreach (Id id, mClient.elements()) {
 		if (mClient.isLogicalId(id))
@@ -475,8 +473,6 @@ IdList RepoApi::logicalElements() const
 
 IdList RepoApi::graphicalElements() const
 {
-	Q_ASSERT(type.idSize() == 3);
-
 	IdList result;
 	foreach (Id id, mClient.elements()) {
 		if (!mClient.isLogicalId(id))
