@@ -39,6 +39,7 @@
 #include "../../qrkernel/timeMeasurer.h"
 
 using namespace qReal;
+using namespace gui;
 
 QString const unsavedDir = "unsaved";
 
@@ -60,7 +61,7 @@ MainWindow::MainWindow()
 		, mRecentProjectsLimit(5)
 		, mRecentProjectsMapper(new QSignalMapper())
 {
-	mCodeTabManager = new QMap<EditorView*, CodeArea*>();
+	mCodeTabManager = new QMap<EditorView*, CodeViewer*>();
 
 	TimeMeasurer timeMeasurer("MainWindow::MainWindow");
 	timeMeasurer.doNothing(); //to avoid the unused variables problem
@@ -224,26 +225,6 @@ void MainWindow::connectActions()
 	connect(mUi->actionShow, SIGNAL(triggered()), this, SLOT(showGestures()));
 
 	connect(mUi->actionFullscreen, SIGNAL(triggered()), this, SLOT(fullscreen()));
-
-	connectDebugActions();
-}
-
-void MainWindow::connectDebugActions()
-{
-	//	connect(mUi->actionDebug, SIGNAL(triggered()), this, SLOT(debug()));
-	//	connect(mUi->actionDebug_Single_step, SIGNAL(triggered()), this, SLOT(debugSingleStep()));
-	//	connect(mUi->actionGenerate_and_build, SIGNAL(triggered()), this, SLOT(generateAndBuild()));
-	//	connect(mUi->actionStart_debugger, SIGNAL(triggered()), this, SLOT(startDebugger()));
-	//	connect(mUi->actionRun, SIGNAL(triggered()), this, SLOT(runProgramWithDebugger()));
-	//	connect(mUi->actionKill, SIGNAL(triggered()), this, SLOT(killProgramWithDebugger()));
-	//	connect(mUi->actionClose_all, SIGNAL(triggered()), this, SLOT(closeDebuggerProcessAndThread()));
-	//	connect(mUi->actionCont, SIGNAL(triggered()), this, SLOT(goToNextBreakpoint()));
-	//	connect(mUi->actionNext, SIGNAL(triggered()), this, SLOT(goToNextInstruction()));
-	//	connect(mUi->actionSet_Breakpoints, SIGNAL(triggered()), this, SLOT(placeBreakpointsInDebugger()));
-	//	connect(mUi->actionConfigure, SIGNAL(triggered()), this, SLOT(configureDebugger()));
-	//	connect(mUi->actionBreak_main, SIGNAL(triggered()), this, SLOT(setBreakpointAtStart()));
-	//	connect(mUi->actionStart_debugging, SIGNAL(triggered()), this, SLOT(startDebugging()));
-	//	connect(mUi->tabs, SIGNAL(currentChanged(int)), this, SLOT(checkEditorForDebug(int)));
 }
 
 QModelIndex MainWindow::rootIndex() const
@@ -903,7 +884,7 @@ void MainWindow::changeMiniMapSource(int index)
 void qReal::MainWindow::closeTab(int index)
 {
 	QWidget *widget = mUi->tabs->widget(index);
-	CodeArea *possibleCodeTab = static_cast<CodeArea *>(widget);
+	CodeViewer *possibleCodeTab = static_cast<CodeViewer *>(widget);
 	EditorView * deletingCodeTab = NULL;
 	foreach (EditorView *diagram, mCodeTabManager->keys())
 		if (mCodeTabManager->value(diagram) == possibleCodeTab)
@@ -1646,13 +1627,11 @@ bool MainWindow::showConnectionRelatedMenus() const
 
 void MainWindow::showInTextEditor(QString const &title, QString const &text)
 {
-	CodeArea * const area = new CodeArea();
-	area->document()->setPlainText(text);
-	qReal::gui::CodeViewer * const area = new qReal::gui::CodeViewer();
+	CodeViewer * const area = new CodeViewer();
 	area->document()->setPlainText(text);
 	if (dynamic_cast<EditorView *>(getCurrentTab()) != NULL) {
 		if (!mCodeTabManager->contains(getCurrentTab())) {
-			CodeArea * const area = new CodeArea();
+			CodeViewer * const area = new CodeViewer();
 			area->document()->setPlainText(text);
 
 			area->show();
