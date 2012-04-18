@@ -429,3 +429,7 @@ QStringList EditorManager::getAllChildrenTypesOf(Id const &parent) const
 	return result;
 }
 
+QStringList EditorManager::getPluginsLoaded() const
+{
+	return mPluginsLoaded;
+}

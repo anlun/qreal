@@ -69,6 +69,9 @@ namespace qReal {
 		bool isDiagramNode(Id const &id) const;
 
 		bool isParentOf(Id const &child, Id const &parent) const;
+
+		QStringList getPluginsLoaded() const;
+
 	private:
 		QStringList mPluginsLoaded;
 		QMap<QString, QString> mPluginFileName;

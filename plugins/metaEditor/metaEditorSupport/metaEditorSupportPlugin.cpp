@@ -84,7 +84,7 @@ void MetaEditorSupportPlugin::generateEditorForQrxc()
 	EditorGenerator editorGenerator(*mLogicalRepoApi, *mMainWindowInterface->errorReporter());
 
 	QDir dir(".");
-
+	
 	QHash<Id, QPair<QString, QString> > metamodelList = editorGenerator.getMetamodelList();
 	foreach (Id const &key, metamodelList.keys()) {
 		QString const metamodelFullName = metamodelList[key].first;
@@ -173,6 +173,7 @@ void MetaEditorSupportPlugin::generateEditorWithQrmc()
 					progress->setValue(progress->value() + forEditor / 2);
 
 					QString normalizedName = name.at(0).toUpper() + name.mid(1);
+					
 					if (!name.isEmpty()) {
 						if (!mMainWindowInterface->unloadPlugin(normalizedName)) {
 							QMessageBox::warning(mMainWindowInterface->windowWidget()
@@ -267,7 +268,7 @@ void MetaEditorSupportPlugin::loadNewEditor(QString const &directoryName
 	progress->setRange(0, 100);
 	progress->setValue(5);
 
-	if (mMainWindowInterface->unloadPlugin(normalizeDirName)) {
+	if (!mMainWindowInterface->unloadPlugin(normalizeDirName)) {
 		QMessageBox::warning(mMainWindowInterface->windowWidget(), tr("error"), tr("cannot unload plugin"));
 		progress->close();
 		delete progress;

@@ -52,23 +52,7 @@ QHash<Id, QPair<QString,QString> > EditorGenerator::getMetamodelList()
 
 void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathToFile, QString const &pathToQRealSource)
 {
-	// find the path to the folder specified by the user for the new editor from the folder "plugins"
-	QStringList pathList = pathToQRealSource.split("/", QString::SkipEmptyParts);
-	QString editorPath = "..";
-	int index = pathList.length() - 1;
-	while ((index >= 0) && (pathList[index] != "..")) {
-		editorPath += "/..";
-		index--;
-	}
-	index++;
-	QStringList directoryPathList = pathToFile.split("/", QString::SkipEmptyParts);
-
-	int first = directoryPathList.length() - index - 1;
-	int last = directoryPathList.length() - 1;
-
-	for (int i = first; i < last; ++i) {
-		editorPath += "/" + directoryPathList[i];
-	}
+	QString editorPath = pathToFile;
 
 	QDomElement metamodel = mDocument.createElement("metamodel");
 	metamodel.setAttribute("xmlns", "http://schema.real.com/schema/");
@@ -77,6 +61,7 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 	QString const includeFile = mApi.stringProperty(metamodelId, "include");
 	QStringList const includeList = includeFile.split(", ", QString::SkipEmptyParts);
 	QString includeProList;
+	
 	foreach (QString const &name, includeList) {
 		includeProList += " " + name;
 		QDomElement include = mDocument.createElement("include");
@@ -123,6 +108,7 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 void EditorGenerator::copyFiles(QString const &pathToFile, QString const &folderToCopyName)
 {
 	QString const workingDirName = SettingsManager::value("workingDir", "./save").toString();
+	
 	QDir sourceDir(workingDirName);
 	sourceDir.cd(folderToCopyName);
 	if (!sourceDir.exists()) {
