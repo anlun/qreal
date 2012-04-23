@@ -312,6 +312,13 @@ void CodeEditor::loadFile(QString const &fileName)
 	QList<int> blockToHighlightNumbers;
 	while (!in.atEnd()) {
 		QString curLine = in.readLine();
+		
+		if (curLine.startsWith("#!{")) {
+			// now it is unneeded string for generator presentation
+			// in editor
+			continue;
+		}
+
 		if (curLine.startsWith("#!")) {
 			blockToHighlightNumbers.append(curLineNumber);
 			curLine = curLine.right(curLine.size() - 2); //chop first 2 symbols "#!"

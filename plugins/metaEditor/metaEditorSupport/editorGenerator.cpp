@@ -112,6 +112,7 @@ void EditorGenerator::copyFiles(QString const &pathToFile, QString const &folder
 	QDir sourceDir(workingDirName);
 	sourceDir.cd(folderToCopyName);
 	if (!sourceDir.exists()) {
+		qDebug() << "AAAAAA" << folderToCopyName;
 		return;
 	}
 

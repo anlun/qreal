@@ -292,7 +292,7 @@ void MetaEditorSupportPlugin::loadNewEditor(QString const &directoryName
 			}
 		}
 	}
-
+	
 	if (progress->value() != 100) {
 		QMessageBox::warning(mMainWindowInterface->windowWidget(), tr("error"), tr("cannot load new editor"));
 	}

@@ -63,10 +63,14 @@ private slots:
 private:
 	static int const mCompletionStartPrefixSize = 3;
 
+	static int tabulationChangeOnLine(QString const & str);
+	static int tabulationChangeAfterLine(QString const & str);
+
 	QTextEdit::ExtraSelection highlightCurrentLine();
 	QList<QTextEdit::ExtraSelection> highlightedLinesSelectionList();
 	QList<QTextEdit::ExtraSelection> highlightedBlocksSelectionList();
 	QString textUnderCursor() const;
+
 
 	SyntaxHighlighter* mHighlighter;
 	QList<int> mHighlightedLineNumbers;

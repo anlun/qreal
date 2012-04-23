@@ -354,9 +354,13 @@ void CodeArea::alignControlLines()
 
 		QString text = block.text().trimmed();
 
+		curTabNumber = std::max(0
+			, curTabNumber + tabulationChangeOnLine(text));
+		/*
 		if (text.startsWith("}") && (curTabNumber > 0)) {
 			curTabNumber--;
 		}
+		*/
 
 		QTextCursor cursor(block);
 		cursor.insertText(QString(curTabNumber, '\t'));
@@ -364,9 +368,12 @@ void CodeArea::alignControlLines()
 		cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
 		cursor.removeSelectedText();
 
+		curTabNumber += tabulationChangeAfterLine(text);
+		/*
 		if (text.startsWith("{")) {
 			curTabNumber++;
 		}
+		*/
 
 		block = block.next();
 	}
@@ -413,8 +420,35 @@ QString CodeArea::toFileSaveString()
 
 		result += text + "\n";
 
+		// it means control string starts block
+		if (tabulationChangeAfterLine(text) > 0) {
+			result += "#!{";
+		}
+
 		block = block.next();
 	}
 	
 	return result;
+}
+
+int CodeArea::tabulationChangeOnLine(QString const &str)
+{
+	if (str.startsWith("}")) {
+		return -1;
+	}
+	return 0;
+}
+
+int CodeArea::tabulationChangeAfterLine(QString const &str)
+{
+	if (
+		str.startsWith("foreach") ||
+		str.startsWith("toFile") ||
+		str.startsWith("switch") ||
+		str.startsWith("case")
+	)
+	{
+		return 1;
+	}
+	return 0;
 }
