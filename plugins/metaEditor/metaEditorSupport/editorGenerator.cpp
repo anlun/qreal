@@ -107,12 +107,13 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 
 void EditorGenerator::copyFiles(QString const &pathToFile, QString const &folderToCopyName)
 {
-	QString const workingDirName = SettingsManager::value("workingDir", "./save").toString();
-	
-	QDir sourceDir(workingDirName);
+	//TODO: make subfolders copying
+
+	QString const saveFileFolder = QFileInfo(SettingsManager::value("saveFile", "./save").toString()).absolutePath();
+	QDir sourceDir(saveFileFolder);
+
 	sourceDir.cd(folderToCopyName);
 	if (!sourceDir.exists()) {
-		qDebug() << "AAAAAA" << folderToCopyName;
 		return;
 	}
 
