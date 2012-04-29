@@ -64,7 +64,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 			int currentTab = 
 				mCodeAreaTab.addTab(new CodeArea, QFileInfo(filePath).fileName());
 			mCodeAreaTab.setCurrentIndex(currentTab);
-			loadFile(filePath);
+			loadFile(QFileInfo(gemakeFileName).absolutePath() + "/" + filePath);
 		}
 	} else {
 		//TODO
@@ -110,7 +110,12 @@ void CodeEditor::initCompleter()
 {
 	mCompleter = new QCompleter(this);
 
-	mCompleter->setModel(modelFromFile("wordlist.txt")); // TODO
+	//mCompleter->setModel(modelFromFile("wordlist.txt")); // TODO
+	
+	QStringList wordsToComplete;
+
+
+	mCompleter->setModel(QStringListModel(QSTRING_LIST, mCompleter));
 	mCompleter->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
 	
 	mCompleter->setCaseSensitivity(Qt::CaseInsensitive);
