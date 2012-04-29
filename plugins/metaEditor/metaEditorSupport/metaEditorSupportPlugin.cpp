@@ -75,7 +75,17 @@ QPair<QString, PreferencesPage *> MetaEditorSupportPlugin::preferencesPage()
 void MetaEditorSupportPlugin::openGenyEditor()
 {
 	using namespace qReal::genyCodeEditor;
-	CodeEditor* editor = new CodeEditor();
+
+	// Geny project folder 
+	QDir const saveFileDir =
+		QFileInfo(SettingsManager::value("saveFile", "./save").toString()).absolutePath();
+
+	if (!saveFileDir.exists("genyProject")) {
+		saveFileDir.mkdir("genyProject");
+		// TODO: create gemakeFile
+	}
+
+	CodeEditor* editor = new CodeEditor(saveFileDir.absolutePath() + "/genyProject/gemake");
 	editor->show();
 }
 

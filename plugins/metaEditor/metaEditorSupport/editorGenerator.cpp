@@ -109,8 +109,8 @@ void EditorGenerator::copyFiles(QString const &pathToFile, QString const &folder
 {
 	//TODO: make subfolders copying
 
-	QString const saveFileFolder = QFileInfo(SettingsManager::value("saveFile", "./save").toString()).absolutePath();
-	QDir sourceDir(saveFileFolder);
+	QString const saveFileDir = QFileInfo(SettingsManager::value("saveFile", "./save").toString()).absolutePath();
+	QDir sourceDir(saveFileDir);
 
 	sourceDir.cd(folderToCopyName);
 	if (!sourceDir.exists()) {
