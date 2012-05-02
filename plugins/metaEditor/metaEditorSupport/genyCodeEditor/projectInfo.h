@@ -1,7 +1,6 @@
 #pragma once
 
-#include <QList>
-#include <QString>
+#include <QStringList>
 
 namespace qReal {
 namespace genyCodeEditor {
@@ -15,10 +14,10 @@ public:
 
 	QString gemakeFileName() const;
 	QString repoPath() const;
-	QList<QString> includedFileNames() const;
+	QStringList includedFileNames() const;
 
 private:
-	QList<QString> mIncludedFileNames;
+	QStringList mIncludedFileNames;
 	QString mRepoPath;
 	QString mGemakeFileName;
 };

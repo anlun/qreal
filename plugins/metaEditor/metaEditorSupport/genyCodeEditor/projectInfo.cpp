@@ -26,7 +26,7 @@ QString ProjectInfo::repoPath() const
 	return mRepoPath;
 }
 
-QList<QString> ProjectInfo::includedFileNames() const
+QStringList ProjectInfo::includedFileNames() const
 {
 	return mIncludedFileNames;
 }

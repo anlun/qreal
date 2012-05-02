@@ -9,6 +9,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QTabWidget>
+#include <QListWidget>
 
 #include "codeArea.h"
 #include "projectInfo.h"
@@ -52,6 +53,7 @@ private:
 	void initCompleter();
 	void initActions();
 	void createMenus();
+	void createProjectFileDock();
 
 	bool maybeSave();
 	
@@ -80,6 +82,8 @@ private:
 	QMenu* mViewMenu;
 
 	QTabWidget mCodeAreaTab;
+	QListWidget* mProjectFileListWidget;
+
 	QCompleter* mCompleter;
 
 	ProjectInfo mProject;

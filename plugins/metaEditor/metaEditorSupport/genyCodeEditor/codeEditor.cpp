@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDir>
+#include <QDockWidget>
 
 #include "codeEditor.h"
 
@@ -25,6 +26,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
+	, mProjectFileListWidget(0)
 	, mCompleter(0)
 {
 	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
@@ -40,6 +42,8 @@ CodeEditor::CodeEditor(QWidget *parent)
 			, this, SLOT( currentTabChanged(int) ));
 	connect(&mCodeAreaTab, SIGNAL( tabCloseRequested(int) )
 			, this, SLOT( tabCloseRequested(int) ));
+
+	createProjectFileDock();
 }
 
 CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
@@ -54,6 +58,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
+	, mProjectFileListWidget(0)
 	, mCompleter(0)
 {
 	//mCodeAreaTab.addTab(new CodeArea, QFileInfo(gemakeFileName).fileName());
@@ -80,6 +85,8 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 			, this, SLOT( currentTabChanged(int) ));
 	connect(&mCodeAreaTab, SIGNAL( tabCloseRequested(int) )
 			, this, SLOT( tabCloseRequested(int) ));
+
+	createProjectFileDock();
 }
 
 CodeEditor::~CodeEditor()
@@ -88,6 +95,14 @@ CodeEditor::~CodeEditor()
 		delete mCompleter;
 	}
 	mCompleter = 0;
+
+	/*
+	 * It's cared by QDockWidget
+	if (mProjectFileListWidget) {
+		delete mProjectFileListWidget;
+	}
+	mProjectFileListWidget = 0;
+	*/
 
 	if (mFileMenu) {
 		delete mFileMenu;
@@ -101,6 +116,18 @@ CodeEditor::~CodeEditor()
 
 }
 
+void CodeEditor::createProjectFileDock() {
+	QDockWidget *dock = new QDockWidget(tr("Project files"), this);
+	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	mProjectFileListWidget = new QListWidget(dock);
+
+	dock->setWidget(mProjectFileListWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, dock);
+	mViewMenu->addAction(dock->toggleViewAction());
+
+	mProjectFileListWidget->addItems(mProject.includedFileNames());
+}
+
 CodeArea* CodeEditor::currentCodeArea()
 {
 	return dynamic_cast<CodeArea *>(mCodeAreaTab.currentWidget());
@@ -110,12 +137,11 @@ void CodeEditor::initCompleter()
 {
 	mCompleter = new QCompleter(this);
 
-	//mCompleter->setModel(modelFromFile("wordlist.txt")); // TODO
+	mCompleter->setModel(modelFromFile("wordlist.txt"));
 	
-	QStringList wordsToComplete;
-
-
-	mCompleter->setModel(QStringListModel(QSTRING_LIST, mCompleter));
+	//QStringList wordsToComplete; //TODO
+	//mCompleter->setModel(QStringListModel(QSTRING_LIST, mCompleter));
+	
 	mCompleter->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
 	
 	mCompleter->setCaseSensitivity(Qt::CaseInsensitive);
