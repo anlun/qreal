@@ -16,8 +16,16 @@ ProjectInfo::ProjectInfo(QString const &gemakeFile)
 	init(gemakeFile);
 }
 
-void ProjectInfo::addFileName(QString const &newFileName) {
-	mIncludedFileNames.append(newFileName);
+void ProjectInfo::fileRenamed(QString const &oldName, QString const &newName)
+{
+	mIncludedFileNames.remove(oldName);
+	mIncludedFileNames.insert(newName);
+}
+
+void ProjectInfo::addFileName(QString const &newFileName)
+{
+	mIncludedFileNames.insert(newFileName);
+	emit fileAdded(newFileName);
 }
 
 QString ProjectInfo::gemakeFileName() const
@@ -30,7 +38,7 @@ QString ProjectInfo::repoPath() const
 	return mRepoPath;
 }
 
-QStringList ProjectInfo::includedFileNames() const
+QSet<QString> ProjectInfo::includedFileNames() const
 {
 	return mIncludedFileNames;
 }
@@ -63,7 +71,7 @@ bool ProjectInfo::init(QString const &newGemakeFileName)
 		if (curFileName.trimmed().isEmpty())
 			continue;
 
-		mIncludedFileNames.append(curFileName.trimmed());
+		mIncludedFileNames.insert(curFileName.trimmed());
 	}
 
 	delete inStream;

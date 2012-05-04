@@ -1,11 +1,13 @@
 #pragma once
 
-#include <QStringList>
+#include <QSet>
 
 namespace qReal {
 namespace genyCodeEditor {
 
-class ProjectInfo {
+class ProjectInfo: public QObject {
+	Q_OBJECT
+
 public:
 	ProjectInfo();
 	ProjectInfo(QString const &gemakeFileName);
@@ -16,10 +18,16 @@ public:
 
 	QString gemakeFileName() const;
 	QString repoPath() const;
-	QStringList includedFileNames() const;
+	QSet<QString> includedFileNames() const;
+
+public slots:
+	void fileRenamed(QString const &oldName, QString const &newName);
+
+signals:
+	void fileAdded(QString const &newFileName);
 
 private:
-	QStringList mIncludedFileNames;
+	QSet<QString> mIncludedFileNames;
 	QString mRepoPath;
 	QString mGemakeFileName;
 };
