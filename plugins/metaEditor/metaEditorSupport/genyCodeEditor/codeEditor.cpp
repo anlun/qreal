@@ -5,10 +5,13 @@
 #include <QStringListModel>
 #include <QCursor>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QFileDialog>
 #include <QDir>
 #include <QDockWidget>
+#include <QVBoxLayout>
 
+#include "fileListItem.h"
 #include "codeEditor.h"
 
 using namespace qReal;
@@ -26,7 +29,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	, mProjectFileListWidget(0)
+	, mFileListDock(0)
 	, mCompleter(0)
 {
 	mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
@@ -58,7 +61,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	, mToggleControlLineVisibleAct(this)
 	, mFileMenu(0)
 	, mViewMenu(0)
-	, mProjectFileListWidget(0)
+	, mFileListDock(0)
 	, mCompleter(0)
 {
 	//mCodeAreaTab.addTab(new CodeArea, QFileInfo(gemakeFileName).fileName());
@@ -117,15 +120,10 @@ CodeEditor::~CodeEditor()
 }
 
 void CodeEditor::createProjectFileDock() {
-	QDockWidget *dock = new QDockWidget(tr("Project files"), this);
-	dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	mProjectFileListWidget = new QListWidget(dock);
+	mFileListDock = new FileListDock(&mProject, this);
 
-	dock->setWidget(mProjectFileListWidget);
-	addDockWidget(Qt::LeftDockWidgetArea, dock);
-	mViewMenu->addAction(dock->toggleViewAction());
-
-	mProjectFileListWidget->addItems(mProject.includedFileNames());
+	addDockWidget(Qt::LeftDockWidgetArea, mFileListDock);
+	mViewMenu->addAction(mFileListDock->toggleViewAction());
 }
 
 CodeArea* CodeEditor::currentCodeArea()
@@ -228,7 +226,17 @@ QStringListModel* CodeEditor::modelFromFile(QString const &fileName)
 
 void CodeEditor::newFile()
 {
-	int newTabIndex = mCodeAreaTab.addTab(new CodeArea, tr("unknown"));
+	bool ok;
+	QString const newFileName = QInputDialog::getText(
+			this, tr("Enter new file name")
+			, tr("File name:")
+			, QLineEdit::Normal, "unknown", &ok
+			);
+	if (!ok || newFileName.isEmpty())
+		return;
+
+	mProject.addFileName(newFileName);
+	int newTabIndex = mCodeAreaTab.addTab(new CodeArea, newFileName);
 	mCodeAreaTab.setCurrentIndex(newTabIndex);
 }
 

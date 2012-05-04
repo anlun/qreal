@@ -16,6 +16,10 @@ ProjectInfo::ProjectInfo(QString const &gemakeFile)
 	init(gemakeFile);
 }
 
+void ProjectInfo::addFileName(QString const &newFileName) {
+	mIncludedFileNames.append(newFileName);
+}
+
 QString ProjectInfo::gemakeFileName() const
 {
 	return mGemakeFileName;

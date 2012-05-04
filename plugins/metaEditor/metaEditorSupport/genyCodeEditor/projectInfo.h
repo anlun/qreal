@@ -12,6 +12,8 @@ public:
 	
 	bool init(QString const &newGemakeFileName);
 
+	void addFileName(QString const &newFileName);
+
 	QString gemakeFileName() const;
 	QString repoPath() const;
 	QStringList includedFileNames() const;

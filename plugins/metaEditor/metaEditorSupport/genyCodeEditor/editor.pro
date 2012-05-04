@@ -13,7 +13,9 @@ HEADERS += \
 	codeEditor.h \
 	syntaxHighlighter.h \
 	lineNumberArea.h \
-	projectInfo.h
+	projectInfo.h \
+	fileListItem.h \
+	fileListDock.h
 
 SOURCES += \
 	codeArea.cpp \
@@ -21,4 +23,6 @@ SOURCES += \
 	syntaxHighlighter.cpp \
 	main.cpp \
 	lineNumberArea.cpp \
-	projectInfo.cpp
+	projectInfo.cpp \
+	fileListItem.cpp \
+	fileListDock.cpp

@@ -10,9 +10,11 @@
 #include <QMenuBar>
 #include <QTabWidget>
 #include <QListWidget>
+#include <QScrollArea>
 
 #include "codeArea.h"
 #include "projectInfo.h"
+#include "fileListDock.h"
 
 namespace qReal {
 namespace genyCodeEditor {
@@ -82,7 +84,8 @@ private:
 	QMenu* mViewMenu;
 
 	QTabWidget mCodeAreaTab;
-	QListWidget* mProjectFileListWidget;
+	//QScrollArea* mProjectFileListWidget;
+	FileListDock* mFileListDock;
 
 	QCompleter* mCompleter;
 
