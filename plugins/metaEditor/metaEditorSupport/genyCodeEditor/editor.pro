@@ -7,6 +7,8 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
+LIBS += -L../../../../bin -lqrrepo
+
 # Input
 HEADERS += \
 	codeArea.h \

@@ -103,12 +103,12 @@ namespace qrRepo {
 
 		virtual QString workingFile() const;
 
-		// "Глобальные" методы, позволяющие делать запросы к модели в целом.
-		//Returns all elements with .element() == type.element()
+		/// "Глобальные" методы, позволяющие делать запросы к модели в целом.
+		/// Returns all elements with .element() == type.element()
 		virtual qReal::IdList graphicalElements(qReal::Id const &type) const;
 		virtual qReal::IdList logicalElements(qReal::Id const &type) const;
 
-		//Returns all elements
+		/// Returns all elements
 		virtual qReal::IdList graphicalElements() const;
 		virtual qReal::IdList logicalElements() const;
 

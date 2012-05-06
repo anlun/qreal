@@ -12,6 +12,8 @@
 #include <QListWidget>
 #include <QScrollArea>
 
+#include "../../../qrrepo/repoApi.h"
+
 #include "codeArea.h"
 #include "projectInfo.h"
 #include "fileListDock.h"
@@ -23,10 +25,11 @@ class CodeEditor : public QMainWindow {
 	Q_OBJECT
 
 public:
-	CodeEditor(QWidget *parent = 0);
+	//CodeEditor(QWidget *parent = 0);
 
 	CodeEditor(
 			QString const &gemakeFileName //< gemakeFileName - path to Geny make file
+			, RepoApi *repoApi
 			, QWidget *parent = 0
 		);
 	~CodeEditor();
@@ -88,6 +91,7 @@ private:
 	FileListDock* mFileListDock;
 
 	QCompleter* mCompleter;
+	RepoApi* mApi;
 
 	ProjectInfo mProject;
 };

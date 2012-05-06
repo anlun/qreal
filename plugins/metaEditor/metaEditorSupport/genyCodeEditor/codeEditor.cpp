@@ -17,6 +17,7 @@
 using namespace qReal;
 using namespace genyCodeEditor;
 
+/*
 CodeEditor::CodeEditor(QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(this)
@@ -48,8 +49,9 @@ CodeEditor::CodeEditor(QWidget *parent)
 
 	createProjectFileDock();
 }
+*/
 
-CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
+CodeEditor::CodeEditor(QString const &gemakeFileName, RepoApi* repoApi, QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(this)
 	, mOpenAct(this)
@@ -63,6 +65,7 @@ CodeEditor::CodeEditor(QString const &gemakeFileName, QWidget *parent)
 	, mViewMenu(0)
 	, mFileListDock(0)
 	, mCompleter(0)
+	, mApi(repoApi)
 {
 	//mCodeAreaTab.addTab(new CodeArea, QFileInfo(gemakeFileName).fileName());
 	mCodeAreaTab.setTabsClosable(true);
@@ -98,14 +101,6 @@ CodeEditor::~CodeEditor()
 		delete mCompleter;
 	}
 	mCompleter = 0;
-
-	/*
-	 * It's cared by QDockWidget
-	if (mProjectFileListWidget) {
-		delete mProjectFileListWidget;
-	}
-	mProjectFileListWidget = 0;
-	*/
 
 	if (mFileMenu) {
 		delete mFileMenu;
@@ -147,6 +142,26 @@ void CodeEditor::initCompleter()
 	mCompleter->setWrapAround(false);
 
 	currentCodeArea()->setCompleter(mCompleter);
+}
+
+QSet<QString> CodeEditor::metamodelPropertySet()
+{
+	if (mApi == 0)
+		return QSet<QString>();
+
+	QSet<QString> propertySet;
+
+	IdList const diagramElements = mApi->logicalElements();
+	//IdList const diagramElements = mApi->graphicalElements();
+
+	foreach (Id const &element, diagramElements) {
+		QString const objectType = element.element();
+		if (objectType == "Property") {
+			propertySet.insert(mApi->stringProperty(element, "name"));
+		}
+	}
+
+	return propertySet;
 }
 
 void CodeEditor::initActions()
