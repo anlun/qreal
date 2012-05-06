@@ -12,7 +12,7 @@
 #include <QListWidget>
 #include <QScrollArea>
 
-#include "../../../qrrepo/repoApi.h"
+#include "../../../../qrrepo/repoApi.h"
 
 #include "codeArea.h"
 #include "projectInfo.h"
@@ -29,7 +29,7 @@ public:
 
 	CodeEditor(
 			QString const &gemakeFileName //< gemakeFileName - path to Geny make file
-			, RepoApi *repoApi
+			, qrRepo::RepoApi *repoApi
 			, QWidget *parent = 0
 		);
 	~CodeEditor();
@@ -56,6 +56,8 @@ private slots:
 
 private:
 	void initCompleter();
+	QSet<QString> metamodelPropertySet();
+
 	void initActions();
 	void createMenus();
 	void createProjectFileDock();
@@ -70,7 +72,6 @@ private:
 	/// Returns current active in tabs CodeArea
 	CodeArea* currentCodeArea();
 
-	//QAbstractItemModel* modelFromFile(QString const &fileName);
 	QStringListModel* modelFromFile(QString const &fileName);
 
 	QAction mNewAct;
@@ -91,7 +92,7 @@ private:
 	FileListDock* mFileListDock;
 
 	QCompleter* mCompleter;
-	RepoApi* mApi;
+	qrRepo::RepoApi* mApi;
 
 	ProjectInfo mProject;
 };

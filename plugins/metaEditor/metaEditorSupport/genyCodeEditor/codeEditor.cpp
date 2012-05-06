@@ -51,7 +51,7 @@ CodeEditor::CodeEditor(QWidget *parent)
 }
 */
 
-CodeEditor::CodeEditor(QString const &gemakeFileName, RepoApi* repoApi, QWidget *parent)
+CodeEditor::CodeEditor(QString const &gemakeFileName, qrRepo::RepoApi* repoApi, QWidget *parent)
 	: QMainWindow(parent)
 	, mNewAct(this)
 	, mOpenAct(this)
@@ -130,15 +130,17 @@ void CodeEditor::initCompleter()
 {
 	mCompleter = new QCompleter(this);
 
-	mCompleter->setModel(modelFromFile("wordlist.txt"));
+	//mCompleter->setModel(modelFromFile("wordlist.txt"));
 	
-	//QStringList wordsToComplete; //TODO
-	//mCompleter->setModel(QStringListModel(QSTRING_LIST, mCompleter));
+	QStringList wordsToComplete;
+	foreach(QString const &str, metamodelPropertySet()) {
+		wordsToComplete.append(str);
+	}
+	wordsToComplete.sort();
+	mCompleter->setModel(new QStringListModel(wordsToComplete, mCompleter));
 	
 	mCompleter->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-	
 	mCompleter->setCaseSensitivity(Qt::CaseInsensitive);
-	//mCompleter->setCaseSensitivity(Qt::CaseSensitive);
 	mCompleter->setWrapAround(false);
 
 	currentCodeArea()->setCompleter(mCompleter);
@@ -152,11 +154,12 @@ QSet<QString> CodeEditor::metamodelPropertySet()
 	QSet<QString> propertySet;
 
 	IdList const diagramElements = mApi->logicalElements();
-	//IdList const diagramElements = mApi->graphicalElements();
 
 	foreach (Id const &element, diagramElements) {
 		QString const objectType = element.element();
-		if (objectType == "Property") {
+
+		//if (objectType == "Property") {
+		if (objectType == "MetaEntity_Attribute") {
 			propertySet.insert(mApi->stringProperty(element, "name"));
 		}
 	}
@@ -219,7 +222,6 @@ void CodeEditor::setHighlightedLineNumbers(QList<int> const &lineNumbers)
 	currentCodeArea()->setHighlightedLineNumbers(lineNumbers);
 }
 
-//QAbstractItemModel* CodeEditor::modelFromFile(QString const &fileName)
 QStringListModel* CodeEditor::modelFromFile(QString const &fileName)
 {
 	QFile file(fileName);
@@ -234,8 +236,9 @@ QStringListModel* CodeEditor::modelFromFile(QString const &fileName)
 		if (!line.isEmpty())
 			words << line.trimmed();
 	}
+	
+	QApplication::restoreOverrideCursor();	
 
-	QApplication::restoreOverrideCursor();
 	return new QStringListModel(words, mCompleter);
 }
 

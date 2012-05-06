@@ -7,9 +7,6 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 
-LIBS += -L../../../../bin -lqrrepo
-
-# Input
 HEADERS += \
 	codeArea.h \
 	codeEditor.h \
@@ -28,3 +25,6 @@ SOURCES += \
 	projectInfo.cpp \
 	fileListItem.cpp \
 	fileListDock.cpp
+
+LIBS += -L../../../../bin -lqrkernel -lqrutils -lqrmc -lqrrepo
+QMAKE_LFLAGS="-Wl,-O1,-rpath,$(PWD)/../../../../bin"

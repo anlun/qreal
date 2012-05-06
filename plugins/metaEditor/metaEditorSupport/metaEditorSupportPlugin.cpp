@@ -85,7 +85,11 @@ void MetaEditorSupportPlugin::openGenyEditor()
 		// TODO: create gemakeFile
 	}
 
-	CodeEditor* editor = new CodeEditor(saveFileDir.absolutePath() + "/genyProject/gemake");
+	CodeEditor* editor =
+		new CodeEditor(
+			saveFileDir.absolutePath() + "/genyProject/gemake"
+			, dynamic_cast<qrRepo::RepoApi*>(mLogicalRepoApi)
+			);
 	editor->show();
 }
 
