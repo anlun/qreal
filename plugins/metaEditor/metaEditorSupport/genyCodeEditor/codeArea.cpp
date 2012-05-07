@@ -415,15 +415,16 @@ QString CodeArea::toFileSaveString()
 		QString text = block.text();
 
 		if (mControlBlocks.contains(block)) {
-			text = "#!" + text.trimmed();
-		}
+			text = text.trimmed();
 
+			// it means control string starts block
+			if (tabulationChangeAfterLine(text) > 0) {
+				text += "\n#!{";
+			}
+
+			text = "#!" + text;
+		}
 		result += text + "\n";
-
-		// it means control string starts block
-		if (tabulationChangeAfterLine(text) > 0) {
-			result += "#!{";
-		}
 
 		block = block.next();
 	}

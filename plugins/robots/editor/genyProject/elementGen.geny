@@ -1,0 +1,79 @@
+#!Task ElementGen
+void uniqueName() {
+#!switch ELEMENT_TYPE
+#!{
+#!case 'Beep':
+#!{
+ecrobot_sound_tone(1000, 100, 50);
+@@!task NextElementCall@@
+#!}
+#!case 'EnginesBackward':
+#!{
+#!/надо что-то сделать с портами
+nxt_motor_set_speed(, Power, 0);
+@@!task NextElementCall@@
+#!}
+#!case 'EnginesForward':
+#!{
+nxt_motor_set_speed(, Power, 0);
+@@!task NextElementCall@@
+#!}
+#!case 'EnginesStop':
+#!{
+nxt_motor_set_speed(, 0, 0);
+@@!task NextElementCall@@
+#!}
+#!case 'FinalNode':
+#!{
+halt();
+@@!task NextElementCall@@
+#!}
+#!case 'InitialNode':
+#!{
+@@!task NextElementCall@@
+#!}
+#!case 'NullificationEncoder':
+#!{
+nxt_motor_set_count(NXT_PORT_Port, 0);
+@@!task NextElementCall@@
+#!}
+#!case 'PlayTone':
+#!{
+ecrobot_sound_tone(Frequency, Duration, 50);
+@@!task NextElementCall@@
+#!}
+#!case 'Timer':
+#!{
+systick_wait_ms(Delay);
+@@!task NextElementCall@@
+#!}
+#!case 'IfBlock':
+#!{
+if (Condition) {
+#!foreach ControlFlow in outgoingLinks
+#!{
+#!switch type
+#!{
+#!case 'true':
+#!{
+#!/ Добавить переход к элементу
+@@!task ElementGen@@
+}
+#!}
+#!case 'false':
+#!{
+else {
+@@!task ElementGen@@
+}
+#!}
+#!}
+#!}
+#!}
+#!case 'Loop':
+#!{
+for (int __iter__ = 0; __iter__ < Iterations; __iter__++) {
+
+}
+#!}
+#!}
+

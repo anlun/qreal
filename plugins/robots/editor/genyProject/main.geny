@@ -1,0 +1,23 @@
+#!Task Main
+#!/Надо добавить:
+#!/ работа с портами
+#!/ InitialBlock
+#!/ WaitFor...
+#!/ function
+#!/ loopblock
+
+#!foreach InitialNode in elementsByType(InitialNode)
+#!{
+#!toFile main.c
+#!{
+#!foreach _ in elements
+#!{
+@@!task ElementGen@@
+#!}
+
+int main() {
+uniqueName();
+return 0;
+}
+#!}
+#!}
