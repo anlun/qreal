@@ -70,7 +70,7 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 		metamodel.appendChild(include);
 	}
 
-	QDomElement pathToGeneratedPluginSource = mDocument.createElement("pathToGeneratedPluginSource");
+	QDomElement pathToGeneratedPluginSource = mDocument.createElement("pathToGeneratedEditorSource");
 	QDomText valuePath = mDocument.createTextNode(
 			QFileInfo(pathToFile).path()
 			);

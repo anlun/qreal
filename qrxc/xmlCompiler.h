@@ -54,6 +54,7 @@ private:
 	void generatePropertyTypesRequests(utils::OutFile &out);
 	void generatePropertyDefaultsRequests(utils::OutFile &out);
 	void generatePaletteGroupsLists(utils::OutFile &out);
+	void generatePathToGeneratedEditorSources(utils::OutFile &out);
 
 	class ListMethodGenerator;
 	class PropertiesGenerator;

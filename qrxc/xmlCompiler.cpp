@@ -192,6 +192,8 @@ void XmlCompiler::generatePluginHeader()
 		<< "\tvirtual QStringList diagramPaletteGroups(QString const &diagram) const;\n"
 		<< "\tvirtual QStringList diagramPaletteGroupList(QString const &diagram, QString const &group) const;\n"
 		<< "\n"
+		<< "\tvirtual QString pathToGeneratedEditorSource() const;\n"
+		<< "\n"
 		<< "private:\n"
 		<< "\tQMap<QString, QIcon> iconMap;\n"
 		<< "\tQMap<QString, QString> diagramNameMap;\n"
@@ -231,6 +233,7 @@ void XmlCompiler::generatePluginSource()
 	generateEnumValues(out);
 	generatePropertyTypesRequests(out);
 	generatePropertyDefaultsRequests(out);
+	generatePathToGeneratedEditorSources(out);
 
 	mEditors[mCurrentEditor]->generateListenerFactory(out, mPluginName);
 }
@@ -317,7 +320,6 @@ void XmlCompiler::generatePaletteGroupsLists(utils::OutFile &out)
 	}
 	out() << "}\n\n";
 }
-
 
 void XmlCompiler::generateDescriptionMappings(OutFile &out)
 {
@@ -675,4 +677,11 @@ void XmlCompiler::generateEnumValues(OutFile &out)
 		out() << "\tQ_UNUSED(name);\n";
 	out() << "\treturn result;\n"
 		<< "}\n\n";
+}
+
+void XmlCompiler::generatePathToGeneratedEditorSources(OutFile &out)
+{
+	out() << "QString " << mPluginName << "Plugin::pathToGeneratedEditorSource() const \n{\n";
+	out() << "\treturn \"" << mEditors[mCurrentEditor]->pathToGeneratedEditorSource() << "\";\n";
+	out() << "}\n\n";
 }

@@ -49,6 +49,10 @@ bool Editor::load(QDir const &currentDir)
 		mIncludes.append(includeFile);
 	}
 
+	//Load path to generated editor sources
+	QDomElement pathToSourceElement = metamodel.firstChildElement("pathToGeneratedEditorSource");
+	mPathToGeneratedEditorSource = pathToSourceElement.text();
+
 	//Load listeners
 	for (QDomElement listenerElement = metamodel.firstChildElement("listener"); !listenerElement.isNull();
 		listenerElement = listenerElement.nextSiblingElement("listener"))
@@ -168,4 +172,9 @@ void Editor::generateListenerFactory(utils::OutFile &out, QString const &pluginN
 
 	out() << "\treturn result;\n"
 		<< "}\n";
+}
+
+QString Editor::pathToGeneratedEditorSource() const
+{
+	return mPathToGeneratedEditorSource;
 }

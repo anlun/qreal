@@ -32,6 +32,8 @@ public:
 	void generateListenerIncludes(utils::OutFile &out) const;
 	void generateListenerFactory(utils::OutFile &out, QString const &pluginName) const;
 
+	QString pathToGeneratedEditorSource() const;
+
 private:
 	XmlCompiler *mXmlCompiler;
 	QDomDocument mXmlDomDocument;
@@ -39,4 +41,5 @@ private:
 	QList<Editor*> mIncludes;
 	QMap<QString, Diagram*> mDiagrams;
 	QList<QPair<QString, QString> > mListeners;
+	QString mPathToGeneratedEditorSource;
 };
