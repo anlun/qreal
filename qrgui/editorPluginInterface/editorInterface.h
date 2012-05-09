@@ -53,6 +53,8 @@ public:
 
 	virtual QStringList diagramPaletteGroups(QString const &diagram) const = 0;
 	virtual QStringList diagramPaletteGroupList(QString const &diagram, QString const &group) const = 0;
+
+	//virtual QString pathToGeneratedEditorSources() const = 0;
 };
 
 }

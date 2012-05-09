@@ -70,6 +70,13 @@ void EditorGenerator::generateEditor(Id const &metamodelId, QString const &pathT
 		metamodel.appendChild(include);
 	}
 
+	QDomElement pathToGeneratedPluginSource = mDocument.createElement("pathToGeneratedPluginSource");
+	QDomText valuePath = mDocument.createTextNode(
+			QFileInfo(pathToFile).path()
+			);
+	pathToGeneratedPluginSource.appendChild(valuePath);
+	metamodel.appendChild(pathToGeneratedPluginSource);
+
 	QDomElement nameSpace = mDocument.createElement("namespace");
 	QDomText nameSpaceName = mDocument.createTextNode("UML 2.0");
 	nameSpace.appendChild(nameSpaceName);
