@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QMap>
 
+namespace qReal {
 namespace genyInterpreter {
 
 class Gemake {
@@ -23,4 +24,5 @@ private:
 	QString mRepoPath;
 };
 
+}
 }

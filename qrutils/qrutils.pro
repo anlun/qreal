@@ -8,9 +8,9 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 RCC_DIR = .moc
 
-LIBS += -L../bin -lqrkernel
-
 DEFINES += QRUTILS_LIBRARY
+
+LIBS += -L../bin -lqrkernel
 
 HEADERS += \
 	outFile.h \

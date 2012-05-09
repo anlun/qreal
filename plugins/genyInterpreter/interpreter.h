@@ -5,7 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 //#include "../../../qrrepo/repoApi.h" // когда в транке лежит
-#include "../../../../unreal/trunk/qrrepo/repoApi.h" // когда лежит в tools
+#include "../../qrrepo/repoApi.h" // когда лежит в plugins
 
 namespace qReal {
 namespace genyInterpreter {

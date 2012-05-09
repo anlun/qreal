@@ -4,6 +4,7 @@
 #include "interpreter.h"
 #include "gemake.h"
 
+using namespace qReal;
 using namespace genyInterpreter;
 
 Gemake::Gemake(QString const &gemakeFilename): mMakeFile(gemakeFilename), 
