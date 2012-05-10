@@ -1,5 +1,6 @@
 #include <QStringList>
 #include <QDebug>
+#include <QFileInfo>
 
 #include "interpreter.h"
 #include "gemake.h"
@@ -7,8 +8,12 @@
 using namespace qReal;
 using namespace genyInterpreter;
 
-Gemake::Gemake(QString const &gemakeFilename): mMakeFile(gemakeFilename), 
-		mFilesByTasks(0), mInStream(0), mRepoPath("")
+Gemake::Gemake(QString const &gemakeFilename)
+	: mMakeFile(gemakeFilename)
+	, mFilesByTasks(0)
+	, mInStream(0)
+	, mRepoPath("")
+	, mPathToGemakeFile(QFileInfo(gemakeFilename).path())
 {
 	init();
 }
@@ -48,7 +53,7 @@ bool Gemake::init()
 		if (curFilename.trimmed().isEmpty())
 			continue;
 
-		taskFilenames.append(curFilename.trimmed());
+		taskFilenames.append(mPathToGemakeFile + "/" + curFilename.trimmed());
 	}
 	
 	if (!mFilesByTasks)
@@ -80,5 +85,5 @@ void Gemake::make()
 {
 	Interpreter ipreter(mRepoPath, mFilesByTasks->value("Main"),
 			qReal::Id(), this);
-	ipreter.interpret();
+	qDebug() << ipreter.interpret();
 }

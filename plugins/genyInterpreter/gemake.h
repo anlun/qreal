@@ -22,6 +22,8 @@ private:
 	QMap<QString, QString> *mFilesByTasks;
 	QTextStream* mInStream;
 	QString mRepoPath;
+
+	QString mPathToGemakeFile;
 };
 
 }

@@ -420,8 +420,8 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 				if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 					qDebug() << "cannot open \"" << file.fileName() << "\"";
 					return "";
-				}	
-				
+				}
+
 				QString braceBlock = getBraceBlock(stream);
 				QTextStream toFileBlockStream(&braceBlock);
 
