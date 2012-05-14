@@ -92,7 +92,7 @@ private:
 	QFile mTaskFile;
 	QTextStream *mInStream;
 
-	qrRepo::RepoApi const * mRepoApi;
+	qrRepo::RepoApi const *mRepoApi;
 	bool const mNeedToDeleteRepoApi;
 
 	Gemake *mGeMaker;

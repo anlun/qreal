@@ -20,6 +20,8 @@ public:
 	bool init();
 	void make();
 	QString getTaskFilename(QString const &taskName) const;
+	QString getUniqueName(Id const &id);
+
 
 private:
 	QFile mMakeFile;
@@ -30,6 +32,9 @@ private:
 	QString mPathToGemakeFile;
 
 	qrRepo::RepoApi const *mApi;
+
+	QMap<QString, QString> mUniqueNamesById;
+	int mUniqueNumber;
 };
 
 }

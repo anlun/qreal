@@ -19,6 +19,7 @@ Gemake::Gemake(
 	, mRepoPath("")
 	, mPathToGemakeFile(QFileInfo(gemakeFilename).path())
 	, mApi(repoApi)
+	, mUniqueNumber(0)
 {
 	init();
 }
@@ -95,5 +96,20 @@ void Gemake::make()
 			, qReal::Id()
 			, this
 			);
-	qDebug() << ipreter.interpret();
+	ipreter.interpret();
+}
+
+QString Gemake::getUniqueName(Id const &id)
+{
+	if (mUniqueNamesById.contains(id.toString())) {
+		return mUniqueNamesById[id.toString()];
+	}
+
+	qDebug() << "AAAA" << id.element();
+	qDebug() << "AAAA" << id;
+	QString newName(id.element() + QString::number(mUniqueNumber));
+	mUniqueNamesById[id.toString()] = newName;
+	mUniqueNumber++;
+
+	return newName;
 }

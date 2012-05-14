@@ -79,17 +79,24 @@ QString Interpreter::controlExpressionParse(QString const &expression)
 
 QString Interpreter::getObjProperty(Id const &objectId, QString const &propertyName) const
 {
-	if (!mRepoApi->exist(objectId)) {
+	Id const logicalId = mRepoApi->logicalId(objectId);
+	Id const usedId = logicalId != Id() ? logicalId : objectId;
+
+	if (propertyName == "uniqueName") {
+		return mGeMaker->getUniqueName(usedId);
+	}
+
+	if (!mRepoApi->exist(usedId)) {
 		qDebug() << "Error! Trying to work with not existed element Id in current repository!";
 		return ""; //TODO: возможно лучше бросать исключение!
 	}
 
-	if (!mRepoApi->hasProperty(objectId, propertyName)) {
+	if (!mRepoApi->hasProperty(usedId, propertyName)) {
 		qDebug() << "Error! Trying to get not existed property of current element!";
 		return ""; //TODO: возможно лучше бросать исключение!
 	}
 
-	return mRepoApi->property(objectId, propertyName).toString();
+	return mRepoApi->property(usedId, propertyName).toString();
 }
 
 QString Interpreter::getCurObjProperty(QString const &propertyName) const
@@ -283,6 +290,11 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 		return mRepoApi->logicalElements(Id("", "", elementsType, ""));
 	}
 
+	// These methods don't have absolute equal in repo
+	if (methodName == "elements")
+		//return mRepoApi->logicalElements();
+		return mRepoApi->graphicalElements();
+
 	qDebug() << "Error! Uses unknown RepoApi list method!";
 
 	return IdList();
@@ -392,11 +404,19 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 				QPair<QString, QString> elemAndListNames = foreachStringParse(parsingStr);
 				Id objectId = getCurObjId();//TODO: change this method
 
+				qDebug() << getCurObjectMethodResultList(elemAndListNames.second);
+				qDebug() << elemAndListNames;
+
 				// Здесь развертка foreach
 				foreach (Id element, getCurObjectMethodResultList(elemAndListNames.second)) {
 					if (elemAndListNames.first == "." || element.element() == elemAndListNames.first) {
 						//обновление mCurrentObjectId
 						mCurrentObjectId = element;
+						
+						qDebug() << mCurrentObjectId;
+						qDebug() << mCurrentObjectId.element();
+						qDebug() << mGeMaker->getUniqueName(mCurrentObjectId);
+
 						resultStr += interpret(foreachBlockStream);
 						
 						foreachBlockStream.seek(0);
