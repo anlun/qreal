@@ -6,12 +6,31 @@
 using namespace qReal;
 using namespace genyInterpreter;
 
-Interpreter::Interpreter(QString const &repoPath, QString const &taskFilename,
-		Id curObjectId, Gemake* geMaker)
+Interpreter::Interpreter(
+		QString const &repoPath
+		, QString const &taskFilename
+		, Id curObjectId
+		, Gemake* geMaker
+		)
 	: mTaskFile(taskFilename)
 	, mInStream(0)
-	, rApi(repoPath)
-	, mRepoPath(repoPath)
+	, mRepoApi(new qrRepo::RepoApi(repoPath))
+	, mNeedToDeleteRepoApi(true)
+	, mGeMaker(geMaker)
+	, mCurrentObjectId(curObjectId)
+{
+}
+
+Interpreter::Interpreter(
+		qrRepo::RepoApi const *repoApi
+		, QString const &taskFilename
+		, Id curObjectId
+		, Gemake* geMaker
+		)
+	: mTaskFile(taskFilename)
+	, mInStream(0)
+	, mRepoApi(repoApi)
+	, mNeedToDeleteRepoApi(false)
 	, mGeMaker(geMaker)
 	, mCurrentObjectId(curObjectId)
 {
@@ -22,6 +41,10 @@ Interpreter::~Interpreter()
 	if (mInStream)
 		delete mInStream;
 	mTaskFile.close();
+
+	if (mNeedToDeleteRepoApi && mRepoApi) {
+		delete mRepoApi;
+	}
 }
 
 Id Interpreter::getCurObjId() const
@@ -46,7 +69,7 @@ QString Interpreter::controlExpressionParse(QString const &expression)
 	else if (expression.startsWith("!task ")){
 		QString subTaskName = expression.mid(6).trimmed();
 
-		Interpreter ipreter(mRepoPath, mGeMaker->getTaskFilename(subTaskName), getCurObjId(), mGeMaker);
+		Interpreter ipreter(mRepoApi, mGeMaker->getTaskFilename(subTaskName), getCurObjId(), mGeMaker);
 		return ipreter.interpret();
 	} else
 		qDebug() << "Fail in @@! expression";
@@ -56,17 +79,17 @@ QString Interpreter::controlExpressionParse(QString const &expression)
 
 QString Interpreter::getObjProperty(Id const &objectId, QString const &propertyName) const
 {
-	if (!rApi.exist(objectId)) {
+	if (!mRepoApi->exist(objectId)) {
 		qDebug() << "Error! Trying to work with not existed element Id in current repository!";
 		return ""; //TODO: возможно лучше бросать исключение!
 	}
 
-	if (!rApi.hasProperty(objectId, propertyName)) {
+	if (!mRepoApi->hasProperty(objectId, propertyName)) {
 		qDebug() << "Error! Trying to get not existed property of current element!";
 		return ""; //TODO: возможно лучше бросать исключение!
 	}
 
-	return rApi.property(objectId, propertyName).toString();
+	return mRepoApi->property(objectId, propertyName).toString();
 }
 
 QString Interpreter::getCurObjProperty(QString const &propertyName) const
@@ -212,37 +235,37 @@ void Interpreter::addLabel(QString const& str) {
 IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 {
 	if (methodName == "children")
-		return rApi.children(getCurObjId());
+		return mRepoApi->children(getCurObjId());
 
 	if (methodName == "outgoingLinks")
-		return rApi.outgoingLinks(getCurObjId());
+		return mRepoApi->outgoingLinks(getCurObjId());
 
 	if (methodName == "incomingLinks")
-		return rApi.incomingLinks(getCurObjId());
+		return mRepoApi->incomingLinks(getCurObjId());
 
 	if (methodName == "links")
-		return rApi.links(getCurObjId());
+		return mRepoApi->links(getCurObjId());
 
 	if (methodName == "outgoingConnections")
-		return rApi.outgoingConnections(getCurObjId());
+		return mRepoApi->outgoingConnections(getCurObjId());
 
 	if (methodName == "incomingConnections")
-		return rApi.incomingConnections(getCurObjId());
+		return mRepoApi->incomingConnections(getCurObjId());
 
 	if (methodName == "outgoingUsages")
-		return rApi.outgoingUsages(getCurObjId());
+		return mRepoApi->outgoingUsages(getCurObjId());
 
 	if (methodName == "incomingUsages")
-		return rApi.incomingUsages(getCurObjId());
+		return mRepoApi->incomingUsages(getCurObjId());
 
 	if (methodName == "connectedElements")
-		return rApi.connectedElements(getCurObjId());
+		return mRepoApi->connectedElements(getCurObjId());
 
 	if (methodName == "outgoingConnectedElements")
-		return rApi.outgoingConnectedElements(getCurObjId());
+		return mRepoApi->outgoingConnectedElements(getCurObjId());
 
 	if (methodName == "incomingConnectedElements")
-		return rApi.incomingConnectedElements(getCurObjId());
+		return mRepoApi->incomingConnectedElements(getCurObjId());
 
 	//Для обращения к методу elementsByType передается "elementsByType(__type_name__)"
 	if (methodName.startsWith("elementsByType")) {
@@ -256,8 +279,8 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 		else
 			return IdList();
 
-		//return rApi.elementsByType(elementsType);
-		return rApi.logicalElements(Id("", "", elementsType, ""));
+		//return mRepoApi->elementsByType(elementsType);
+		return mRepoApi->logicalElements(Id("", "", elementsType, ""));
 	}
 
 	qDebug() << "Error! Uses unknown RepoApi list method!";
@@ -268,13 +291,13 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 Id Interpreter::getCurObjectMethodResult(QString const &methodName)
 {	
 	if (methodName == "parent")
-		return rApi.parent(getCurObjId());
+		return mRepoApi->parent(getCurObjId());
 
 	if (methodName == "to")
-		return rApi.to(getCurObjId());
+		return mRepoApi->to(getCurObjId());
 
 	if (methodName == "from")
-		return rApi.from(getCurObjId());
+		return mRepoApi->from(getCurObjId());
 
 	return Id();
 }

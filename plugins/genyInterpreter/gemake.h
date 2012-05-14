@@ -5,12 +5,16 @@
 #include <QTextStream>
 #include <QMap>
 
+#include "../../qrrepo/repoApi.h"
+
 namespace qReal {
 namespace genyInterpreter {
 
 class Gemake {
 public:
-	Gemake(QString const &gemakeFilename);
+	//TODO: make normal RepoApi initialization by first line of gemake file
+	//Gemake(QString const &gemakeFilename);
+	Gemake(QString const &gemakeFilename, qrRepo::RepoApi const * repoApi);
 	~Gemake();
 
 	bool init();
@@ -20,10 +24,12 @@ public:
 private:
 	QFile mMakeFile;
 	QMap<QString, QString> *mFilesByTasks;
-	QTextStream* mInStream;
+	QTextStream *mInStream;
 	QString mRepoPath;
 
 	QString mPathToGemakeFile;
+
+	qrRepo::RepoApi const *mApi;
 };
 
 }

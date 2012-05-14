@@ -8,12 +8,17 @@
 using namespace qReal;
 using namespace genyInterpreter;
 
-Gemake::Gemake(QString const &gemakeFilename)
+//Gemake::Gemake(QString const &gemakeFilename)
+Gemake::Gemake(
+		QString const &gemakeFilename
+		, qrRepo::RepoApi const * repoApi
+	)
 	: mMakeFile(gemakeFilename)
 	, mFilesByTasks(0)
 	, mInStream(0)
 	, mRepoPath("")
 	, mPathToGemakeFile(QFileInfo(gemakeFilename).path())
+	, mApi(repoApi)
 {
 	init();
 }
@@ -83,7 +88,12 @@ bool Gemake::init()
 
 void Gemake::make()
 {
-	Interpreter ipreter(mRepoPath, mFilesByTasks->value("Main"),
-			qReal::Id(), this);
+	Interpreter ipreter(
+			//mRepoPath
+			mApi
+			, mFilesByTasks->value("Main")
+			, qReal::Id()
+			, this
+			);
 	qDebug() << ipreter.interpret();
 }

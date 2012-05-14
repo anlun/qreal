@@ -14,15 +14,27 @@ class Gemake;
 
 class Interpreter {
 public:
-	Interpreter(QString const &repoPath, QString const &taskFilename,
-			Id curObject, Gemake* gemaker);
+	Interpreter(
+		QString const &repoPath
+		, QString const &taskFilename
+		, Id curObject
+		, Gemake* gemaker
+		);
+
+	Interpreter(
+		qrRepo::RepoApi const *repoApi
+		, QString const &taskFilename
+		, Id curObject
+		, Gemake* gemaker
+		);
+
 	~Interpreter();
 
 	QString interpret();
 
 private:
 	//Can move cursor position in stream!
-	QString interpret(QTextStream& stream);
+	QString interpret(QTextStream &stream);
 
 	//Control string starts with #!
 	bool isControlString(QString const &) const;
@@ -78,12 +90,12 @@ private:
 	Id getCurObjId() const;
 
 	QFile mTaskFile;
-	QTextStream* mInStream;
+	QTextStream *mInStream;
 
-	qrRepo::RepoApi rApi;
-	QString mRepoPath;
+	qrRepo::RepoApi const * mRepoApi;
+	bool const mNeedToDeleteRepoApi;
 
-	Gemake* mGeMaker;
+	Gemake *mGeMaker;
 
 	Id mCurrentObjectId;
 	QMap<QString, Id> mObjectsByLabels;
