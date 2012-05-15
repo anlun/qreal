@@ -130,6 +130,8 @@ Interpreter::ControlStringType Interpreter::controlStringType(QString const &str
 		return switchType;
 	if (workStr.startsWith("case") || workStr.startsWith("default"))
 		return caseType;
+	if (workStr.startsWith("if"))
+		return ifType;
 
 	return notControlType;
 }
@@ -207,7 +209,7 @@ QString Interpreter::switchStringParse(QString const &str)
 
 QString Interpreter::caseStringParse(QString const &str)
 {
-	QStringList strElements = str.split(' ');
+	QStringList const strElements = str.split(' ');
 
 	if (controlStringType(strElements[0]) != caseType) {
 		qDebug()  << "Error! Bad \'case\' structure!";
@@ -218,8 +220,8 @@ QString Interpreter::caseStringParse(QString const &str)
 		return "";
 
 	QString caseValue = str.mid(7).trimmed();//отрезаем "#!case "
-	int firstApostoIndex = caseValue.indexOf("\'");
-	int lastApostoIndex = caseValue.lastIndexOf("\'");
+	int const firstApostoIndex = caseValue.indexOf("\'");
+	int const lastApostoIndex = caseValue.lastIndexOf("\'");
 
 	if (firstApostoIndex == -1) {
 		qDebug() << "Error! Bad \'case\' structure!";
@@ -227,6 +229,39 @@ QString Interpreter::caseStringParse(QString const &str)
 	}
 
 	return caseValue.mid(firstApostoIndex + 1, lastApostoIndex - firstApostoIndex - 1);
+}
+
+bool Interpreter::ifStringParse(QString const &str)
+{
+	bool isPositiveType;
+	QRegExp const positiveStatement("#!if (\w+) == (\w+)");	
+	QRegExp const negativeStatement("#!if (\w+) != (\w+)");
+
+	if (positiveStatement.exactMatch(str)) {
+		isPositiveType = true;
+
+	} else if (negativeStatement.exactMatch(str)) {
+		isPositiveType = false;
+
+	} else {
+		qDebug() << "Error! Bad \'if\' structure!";
+		return "";
+	}
+
+	QRegExp const parenthesesStatement("(\w+)");
+	parenthesesStatement.indexIn(str);
+	QStringList const propertyAndValue = parenthesesStatement.capturedTexts();
+	
+	// Deleting '(', ')'
+	QString const propertyName = propertyAndValue.at(0).mid(1, propertyAndValue.size() - 2);
+	QString const value = propertyAndValue.at(1).mid(1, propertyAndValue.size() - 2);
+
+	bool const isEqual = getCurObjProperty(propertyName) == value;
+	if (isPositiveType == isEqual) {
+		return true;
+	}
+
+	return false;
 }
 
 QString Interpreter::saveObjLabel(QString const &str)
@@ -256,6 +291,13 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 	if (methodName == "outgoingConnections")
 		return mRepoApi->outgoingConnections(getCurObjId());
 
+	// case outgoingConnection(LINK_STATUS)
+	if (methodName.startsWith("outgoingConnection(")) {
+		QString const arg = getArgument(methodName);
+
+		IdList result;
+	}
+
 	if (methodName == "incomingConnections")
 		return mRepoApi->incomingConnections(getCurObjId());
 
@@ -276,14 +318,9 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 
 	//Для обращения к методу elementsByType передается "elementsByType(__type_name__)"
 	if (methodName.startsWith("elementsByType")) {
-		QString elementsType;
-		int leftParenthesisPos = methodName.indexOf('(');
-		int rightParenthesisPos = methodName.indexOf(')');
+		QString const elementsType = getArgument(methodName);
 
-		if ( (leftParenthesisPos > -1) && (rightParenthesisPos > leftParenthesisPos) )
-			elementsType = methodName.mid(leftParenthesisPos + 1,
-					rightParenthesisPos - leftParenthesisPos - 1);
-		else
+		if (elementsType.isEmpty())
 			return IdList();
 
 		//return mRepoApi->elementsByType(elementsType);
@@ -508,6 +545,17 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 
 				return resultStr;
 			}
+		case ifType:
+			{
+				if (!ifStringParse(parsingStr)) {
+					return "";
+				}
+
+				QString braceBlock = getBraceBlock(stream);
+				QTextStream blockStream(&braceBlock);
+
+				return interpret(blockStream);
+			}
 		case notControlType:
 			{
 				return "";
@@ -558,4 +606,16 @@ QString Interpreter::interpret()
 	QString const taskName = curStr.right(curStr.length() - 5); //5 - "Task " length;
 
 	return interpret(*mInStream);
+}
+
+QString Interpreter::getArgument(QString const &str)
+{
+	int const leftParenthesisPos = str.indexOf('(');
+	int const rightParenthesisPos = str.indexOf(')');
+
+	if ( (leftParenthesisPos > -1) && (rightParenthesisPos > leftParenthesisPos) )
+		return str.mid(leftParenthesisPos + 1,
+				rightParenthesisPos - leftParenthesisPos - 1);
+
+	return QString();
 }

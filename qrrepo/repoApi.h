@@ -54,6 +54,14 @@ namespace qrRepo {
 		qReal::IdList outgoingConnectedElements(qReal::Id const &id) const;
 		qReal::IdList incomingConnectedElements(qReal::Id const &id) const;
 
+		/*
+		/// Returns elements connected with {id} by links with {labelName} label
+		qReal::IdList connectedElements(qReal::Id const &id, QString const &labelName) const;
+		qReal::IdList outgoingConnectedElements(qReal::Id const &id, QString const &labelName) const;
+		qReal::IdList incomingConnectedElements(qReal::Id const &id, QString const &labelName) const;
+		*/
+
+
 		QString typeName(qReal::Id const &id) const;
 
 		QVariant property(qReal::Id const &id, QString const &propertyName) const;

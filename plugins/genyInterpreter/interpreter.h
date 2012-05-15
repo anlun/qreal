@@ -40,12 +40,15 @@ private:
 	bool isControlString(QString const &) const;
 
 	enum ControlStringType {
-		commentType, foreachType,
-		forType,
-		leftBraceType, rightBraceType,
-		toFileType, saveObjType,
-		switchType, caseType,
-		notControlType
+		commentType
+		, foreachType
+		, forType
+		, leftBraceType, rightBraceType
+		, toFileType
+		, saveObjType
+		, switchType, caseType
+		, ifType
+		, notControlType
 	};
 	ControlStringType controlStringType(QString const &) const;
 
@@ -70,6 +73,9 @@ private:
 	//Returns a case value
 	QString caseStringParse(QString const &);
 
+	//Returns is need to interpret block or not
+	bool ifStringParse(QString const &);
+
 	QString saveObjLabel(QString const &);
 	void addLabel(QString const &);
 
@@ -88,6 +94,10 @@ private:
 
 	//нужно, так как возможно использование списка Id вместо одного
 	Id getCurObjId() const;
+	
+	/// Parse str that is smth like "name(_ARG_)"
+	/// returns "_ARG_"
+	static QString getArgument(QString const &str);
 
 	QFile mTaskFile;
 	QTextStream *mInStream;
