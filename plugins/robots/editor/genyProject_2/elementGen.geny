@@ -54,5 +54,25 @@ void @@uniqueName@@() {
 #!{
 @@!task LoopElement@@
 #!}
+#!case 'WaitForColor':
+#!{
+@@!task WaitForColorElement@@
+#!}
+#!case 'WaitForColorIntensity':
+#!{
+@@!task WaitForColorIntensityElement@@
+#!}
+#!case 'WaitForEncoder':
+#!{
+@@!task WaitForEncoderElement@@
+#!}
+#!case 'WaitForSonarDistance':
+#!{
+@@!task WaitForSonarDistanceElement@@
+#!}
+#!case 'WaitForTouchSensor':
+#!{
+@@!task WaitForTouchSensorElement@@
+#!}
 #!}
 }

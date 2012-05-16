@@ -9,3 +9,8 @@ enginesForwardElement.geny
 enginesBackwardElement.geny
 enginesStopElement.geny
 initialBlockElement.geny
+waitForColorElement.geny
+waitForColorIntensityElement.geny
+waitForEncoderElement.geny
+waitForSonarDistanceElement.geny
+waitForTouchSensorElement.geny

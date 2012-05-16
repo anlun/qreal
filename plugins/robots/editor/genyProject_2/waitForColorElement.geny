@@ -1,0 +1,32 @@
+Task WaitForColorElement
+	while (
+		ecrobot_get_nxtcolorsensor_id(NXT_PORT_S@@Port@@)
+		!=
+#!if %Color% == %Красный%
+#!{
+	NXT_COLOR_RED
+#!}
+#!if %Color% == %Зелёный%
+#!{
+	NXT_COLOR_GREEN
+#!}
+#!if %Color% == %Синий%
+#!{
+	NXT_COLOR_BLUE
+#!}
+#!if %Color% == %Чёрный%
+#!{
+	NXT_COLOR_BLACK
+#!}
+#!if %Color% == %Жёлтый%
+#!{
+	NXT_COLOR_YELLOW
+#!}
+#!if %Color% == %Белый%
+#!{
+	NXT_COLOR_WHITE
+#!}
+
+	)
+{
+}
