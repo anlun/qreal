@@ -74,5 +74,10 @@ void @@uniqueName@@() {
 #!{
 @@!task WaitForTouchSensorElement@@
 #!}
+#!case 'Function':
+#!{
+	@@Body@@
+@@!task NextElementCall@@
+#!}
 #!}
 }

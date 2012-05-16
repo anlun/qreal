@@ -30,3 +30,4 @@ Task WaitForColorElement
 	)
 {
 }
+@@!task NextElementCall@@

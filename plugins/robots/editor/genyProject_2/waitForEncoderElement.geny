@@ -3,3 +3,4 @@ while(nxt_motor_get_count(NXT_PORT_@@Port@@)
 	< @@TachoLimit@@)
 {
 }
+@@!task NextElementCall@@
