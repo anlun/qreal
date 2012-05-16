@@ -1,0 +1,5 @@
+#!Task NextElementCall
+#!foreach _ in outgoingConnectedElements
+#!{
+	uniqueName();
+#!}

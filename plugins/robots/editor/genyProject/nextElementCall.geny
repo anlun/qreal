@@ -1,5 +1,5 @@
-#!Task NextElementCall
-#!foreach _ in outgoingConnectedElements
+Task NextElementCall
+#!foreach . in outgoingConnectedElements
 #!{
-	uniqueName();
+	@@uniqueName@@();
 #!}

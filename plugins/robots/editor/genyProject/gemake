@@ -3,3 +3,14 @@
 main.geny
 nextElementCall.geny
 elementGen.geny
+ifElement.geny
+loopElement.geny
+enginesForwardElement.geny
+enginesBackwardElement.geny
+enginesStopElement.geny
+initialBlockElement.geny
+waitForColorElement.geny
+waitForColorIntensityElement.geny
+waitForEncoderElement.geny
+waitForSonarDistanceElement.geny
+waitForTouchSensorElement.geny

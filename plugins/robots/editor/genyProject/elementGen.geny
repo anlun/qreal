@@ -1,32 +1,31 @@
-#!Task ElementGen
-void uniqueName() {
+Task ElementGen
+void @@uniqueName@@() {
 #!switch ELEMENT_TYPE
 #!{
 #!case 'Beep':
 #!{
-ecrobot_sound_tone(1000, 100, 50);
+	ecrobot_sound_tone(1000, 100, 50);
 @@!task NextElementCall@@
 #!}
 #!case 'EnginesBackward':
 #!{
-#!/надо что-то сделать с портами
-nxt_motor_set_speed(, Power, 0);
-@@!task NextElementCall@@
+@@!task EnginesBackwardElement@@
 #!}
 #!case 'EnginesForward':
 #!{
-nxt_motor_set_speed(, Power, 0);
-@@!task NextElementCall@@
+@@!task EnginesForwardElement@@
 #!}
 #!case 'EnginesStop':
 #!{
-nxt_motor_set_speed(, 0, 0);
-@@!task NextElementCall@@
+@@!task EnginesStopElement@@
 #!}
 #!case 'FinalNode':
 #!{
-halt();
-@@!task NextElementCall@@
+	halt();
+#!}
+#!case 'InitialBlock'
+#!{
+@@!task InitialBlockElement@@
 #!}
 #!case 'InitialNode':
 #!{
@@ -34,46 +33,51 @@ halt();
 #!}
 #!case 'NullificationEncoder':
 #!{
-nxt_motor_set_count(NXT_PORT_Port, 0);
+	nxt_motor_set_count(NXT_PORT_@@Port@@, 0);
 @@!task NextElementCall@@
 #!}
 #!case 'PlayTone':
 #!{
-ecrobot_sound_tone(Frequency, Duration, 50);
+	ecrobot_sound_tone(@@Frequency@@, @@Duration@@, 50);
 @@!task NextElementCall@@
 #!}
 #!case 'Timer':
 #!{
-systick_wait_ms(Delay);
+	systick_wait_ms(@@Delay@@);
 @@!task NextElementCall@@
 #!}
 #!case 'IfBlock':
 #!{
-if (Condition) {
-#!foreach ControlFlow in outgoingLinks
-#!{
-#!switch type
-#!{
-#!case 'true':
-#!{
-#!/ Добавить переход к элементу
-@@!task ElementGen@@
-}
-#!}
-#!case 'false':
-#!{
-else {
-@@!task ElementGen@@
-}
-#!}
-#!}
-#!}
+@@!task IfElement@@
 #!}
 #!case 'Loop':
 #!{
-for (int __iter__ = 0; __iter__ < Iterations; __iter__++) {
-
+@@!task LoopElement@@
+#!}
+#!case 'WaitForColor':
+#!{
+@@!task WaitForColorElement@@
+#!}
+#!case 'WaitForColorIntensity':
+#!{
+@@!task WaitForColorIntensityElement@@
+#!}
+#!case 'WaitForEncoder':
+#!{
+@@!task WaitForEncoderElement@@
+#!}
+#!case 'WaitForSonarDistance':
+#!{
+@@!task WaitForSonarDistanceElement@@
+#!}
+#!case 'WaitForTouchSensor':
+#!{
+@@!task WaitForTouchSensorElement@@
+#!}
+#!case 'Function':
+#!{
+	@@Body@@
+@@!task NextElementCall@@
+#!}
+#!}
 }
-#!}
-#!}
-
