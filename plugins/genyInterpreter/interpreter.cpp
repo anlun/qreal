@@ -237,7 +237,7 @@ bool Interpreter::ifStringParse(QString const &str)
 	QString const alphabet =
 		"абвгдеёжзиклмнопрстуфхцчшщъыьэюя"\
 		"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-	QString const expressionTemplate = "[" + alphabet + "a-zA-Z0-9 ]+";
+	QString const expressionTemplate = "[" + alphabet + "a-zA-Z0-9 ]*"; //TODO: problem of empty property name may occur
 
 	QString const workStr = str.toUtf8();
 
@@ -308,13 +308,6 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 	if (methodName == "outgoingConnections")
 		return mRepoApi->outgoingConnections(getCurObjId());
 
-	// case outgoingConnection(LINK_STATUS)
-	if (methodName.startsWith("outgoingConnection(")) {
-		QString const arg = getArgument(methodName);
-
-		IdList result;
-	}
-
 	if (methodName == "incomingConnections")
 		return mRepoApi->incomingConnections(getCurObjId());
 
@@ -327,8 +320,9 @@ IdList Interpreter::getCurObjectMethodResultList(QString const &methodName)
 	if (methodName == "connectedElements")
 		return mRepoApi->connectedElements(getCurObjId());
 
-	if (methodName == "outgoingConnectedElements")
+	if (methodName == "outgoingConnectedElements") {
 		return mRepoApi->outgoingConnectedElements(getCurObjId());
+	}
 
 	if (methodName == "incomingConnectedElements")
 		return mRepoApi->incomingConnectedElements(getCurObjId());

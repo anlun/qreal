@@ -204,15 +204,6 @@ qReal::IdList RepoApi::connectedElements(qReal::Id const &id) const
 	return result;
 }
 
-/*
-qReal::IdList RepoApi::connectedElements(qReal::Id const &id, QString const &labelName) const
-{
-	qReal::IdList result = outgoingConnectedElements(id, labelName);
-	result.append(incomingConnectedElements(id, labelName));
-	return result;
-}
-*/
-
 qReal::IdList RepoApi::outgoingConnectedElements(qReal::Id const &id) const
 {
 	qReal::IdList result;
@@ -221,22 +212,10 @@ qReal::IdList RepoApi::outgoingConnectedElements(qReal::Id const &id) const
 
 		result.append(toElem);
 	}
+	result.append(to(id));
+
 	return result;
 }
-
-/*
-qReal::IdList RepoApi::outgoingConnectedElements(
-		qReal::Id const &id, QString const &labelName) const
-{
-	qReal::IdList result;
-	foreach (qReal::Id curLink, outgoingLinks(id)) {
-		qReal::Id toElem = to(curLink);
-
-		result.append(toElem);
-	}
-	return result;
-}
-*/
 
 qReal::IdList RepoApi::incomingConnectedElements(qReal::Id const &id) const
 {
@@ -246,22 +225,10 @@ qReal::IdList RepoApi::incomingConnectedElements(qReal::Id const &id) const
 
 		result.append(fromElem);
 	}
+	result.append(from(id));
+
 	return result;
 }
-
-/*
-qReal::IdList RepoApi::incomingConnectedElements(qReal::Id const &id
-		, QString const &labelName) const
-{
-	qReal::IdList result;
-	foreach (qReal::Id curLink, incomingLinks(id)) {
-		qReal::Id fromElem = from(curLink);
-
-		result.append(fromElem);
-	}
-	return result;
-}
-*/
 
 QString RepoApi::typeName(Id const &id) const
 {

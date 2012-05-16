@@ -51,16 +51,10 @@ namespace qrRepo {
 		void deleteUsage(qReal::Id const &source, qReal::Id const &destination);
 
 		qReal::IdList connectedElements(qReal::Id const &id) const;
+		/// With to(id)
 		qReal::IdList outgoingConnectedElements(qReal::Id const &id) const;
+		/// With from(id)
 		qReal::IdList incomingConnectedElements(qReal::Id const &id) const;
-
-		/*
-		/// Returns elements connected with {id} by links with {labelName} label
-		qReal::IdList connectedElements(qReal::Id const &id, QString const &labelName) const;
-		qReal::IdList outgoingConnectedElements(qReal::Id const &id, QString const &labelName) const;
-		qReal::IdList incomingConnectedElements(qReal::Id const &id, QString const &labelName) const;
-		*/
-
 
 		QString typeName(qReal::Id const &id) const;
 
