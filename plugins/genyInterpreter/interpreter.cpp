@@ -93,6 +93,7 @@ QString Interpreter::getObjProperty(Id const &objectId, QString const &propertyN
 
 	if (!mRepoApi->hasProperty(usedId, propertyName)) {
 		qDebug() << "Error! Trying to get not existed property of current element!";
+		qDebug() << propertyName << usedId;
 		return ""; //TODO: возможно лучше бросать исключение!
 	}
 
@@ -233,30 +234,46 @@ QString Interpreter::caseStringParse(QString const &str)
 
 bool Interpreter::ifStringParse(QString const &str)
 {
-	bool isPositiveType;
-	QRegExp const positiveStatement("#!if (\w+) == (\w+)");	
-	QRegExp const negativeStatement("#!if (\w+) != (\w+)");
+	QString const alphabet =
+		"абвгдеёжзиклмнопрстуфхцчшщъыьэюя"\
+		"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+	QString const expressionTemplate = "[" + alphabet + "a-zA-Z0-9 ]+";
 
-	if (positiveStatement.exactMatch(str)) {
+	QString const workStr = str.toUtf8();
+
+	//qDebug() << "___IF_BLOCK_START";
+	//qDebug() << str;
+
+	bool isPositiveType;
+	QRegExp const positiveStatement("#!if %" + expressionTemplate + "% == %" + expressionTemplate + "%");	
+	QRegExp const negativeStatement("#!if %" + expressionTemplate + "% != %" + expressionTemplate + "%");
+
+	if (positiveStatement.exactMatch(workStr)) {
 		isPositiveType = true;
 
-	} else if (negativeStatement.exactMatch(str)) {
+	} else if (negativeStatement.exactMatch(workStr)) {
 		isPositiveType = false;
 
 	} else {
 		qDebug() << "Error! Bad \'if\' structure!";
-		return "";
+		return false;
 	}
 
-	QRegExp const parenthesesStatement("(\w+)");
-	parenthesesStatement.indexIn(str);
-	QStringList const propertyAndValue = parenthesesStatement.capturedTexts();
+	QString const ruleParamStatement = "%" + expressionTemplate + "%";
+	QRegExp const paramStatement(ruleParamStatement);
+	int pos = paramStatement.indexIn(workStr);
+	QString propertyName = paramStatement.capturedTexts().at(0);
+	paramStatement.indexIn(workStr, pos + 1);
+	QString value = paramStatement.capturedTexts().at(0);
 	
-	// Deleting '(', ')'
-	QString const propertyName = propertyAndValue.at(0).mid(1, propertyAndValue.size() - 2);
-	QString const value = propertyAndValue.at(1).mid(1, propertyAndValue.size() - 2);
+	// Deleting '%', '%'
+	propertyName = propertyName.mid(1, propertyName.size() - 2);
+	value = value.mid(1, value.size() - 2);
 
-	bool const isEqual = getCurObjProperty(propertyName) == value;
+	qDebug() << "___IF_BLOCK_NEAR_END";
+
+	bool const isEqual = getCurObjProperty(propertyName).toUtf8() == value;
+
 	if (isPositiveType == isEqual) {
 		return true;
 	}
@@ -441,8 +458,8 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 				QPair<QString, QString> elemAndListNames = foreachStringParse(parsingStr);
 				Id objectId = getCurObjId();//TODO: change this method
 
-				qDebug() << getCurObjectMethodResultList(elemAndListNames.second);
-				qDebug() << elemAndListNames;
+				//qDebug() << getCurObjectMethodResultList(elemAndListNames.second);
+				//qDebug() << elemAndListNames;
 
 				// Здесь развертка foreach
 				foreach (Id element, getCurObjectMethodResultList(elemAndListNames.second)) {
@@ -450,9 +467,9 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 						//обновление mCurrentObjectId
 						mCurrentObjectId = element;
 						
-						qDebug() << mCurrentObjectId;
-						qDebug() << mCurrentObjectId.element();
-						qDebug() << mGeMaker->getUniqueName(mCurrentObjectId);
+						//qDebug() << mCurrentObjectId;
+						//qDebug() << mCurrentObjectId.element();
+						//qDebug() << mGeMaker->getUniqueName(mCurrentObjectId);
 
 						resultStr += interpret(foreachBlockStream);
 						
@@ -547,14 +564,16 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 			}
 		case ifType:
 			{
+				QString braceBlock = getBraceBlock(stream);
+				QTextStream blockStream(&braceBlock);
+
 				if (!ifStringParse(parsingStr)) {
 					return "";
 				}
 
-				QString braceBlock = getBraceBlock(stream);
-				QTextStream blockStream(&braceBlock);
-
-				return interpret(blockStream);
+				QString res = interpret(blockStream);
+				qDebug() << res;
+				return res;
 			}
 		case notControlType:
 			{

@@ -105,8 +105,6 @@ QString Gemake::getUniqueName(Id const &id)
 		return mUniqueNamesById[id.toString()];
 	}
 
-	qDebug() << "AAAA" << id.element();
-	qDebug() << "AAAA" << id;
 	QString newName(id.element() + QString::number(mUniqueNumber));
 	mUniqueNamesById[id.toString()] = newName;
 	mUniqueNumber++;
