@@ -234,13 +234,13 @@ QString Interpreter::caseStringParse(QString const &str)
 
 QString Interpreter::IfStringParseHelper::alphabet()
 {	
-	return "абвгдеёжзиклмнопрстуфхцчшщъыьэюя"\
-		"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+	return "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"\
+		"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
 }
 
 QString Interpreter::IfStringParseHelper::expressionTemplate()
 {	
-	return "[" + IfStringParseHelper::alphabet() + "a-zA-Z0-9 ]*"; //TODO: problem of empty property name may occur
+	return "[" + IfStringParseHelper::alphabet() + "a-zA-Z0-9()_ ]*"; //TODO: problem of empty property name may occur
 }
 	
 Interpreter::IfStringParseHelper::IfControlStringType
@@ -270,6 +270,7 @@ bool Interpreter::ifStringParse(QString const &str)
 
 	IfStringParseHelper::IfControlStringType currentType = IfStringParseHelper::stringType(workStr);
 	if (currentType == IfStringParseHelper::NoIfStatement) {
+		qDebug() << str;
 		qDebug() << "Error! Bad \'if\' structure!";
 		return false;
 	}
@@ -278,13 +279,13 @@ bool Interpreter::ifStringParse(QString const &str)
 	QRegExp const paramStatement(ruleParamStatement);
 	int pos = paramStatement.indexIn(workStr);
 	QString propertyName = paramStatement.capturedTexts().at(0);
-	paramStatement.indexIn(workStr, pos + 1);
+	paramStatement.indexIn(workStr, pos + propertyName.length());
 	QString value = paramStatement.capturedTexts().at(0);
 	
 	// Deleting '%', '%'
 	propertyName = propertyName.mid(1, propertyName.size() - 2);
 	value = value.mid(1, value.size() - 2);
-	QString const property = getCurObjProperty(propertyName).toUtf8();
+	QByteArray const property = getCurObjProperty(propertyName).toUtf8();
 
 	switch (currentType) {
 		case IfStringParseHelper::EqualStatement:
@@ -297,7 +298,7 @@ bool Interpreter::ifStringParse(QString const &str)
 			}
 		case IfStringParseHelper::ContainsStatement:
 			{
-				return property.contains(value);
+				return property.contains(value.toUtf8());
 			}
 		case IfStringParseHelper::NoIfStatement:
 			{
@@ -479,19 +480,12 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 				QPair<QString, QString> elemAndListNames = foreachStringParse(parsingStr);
 				Id objectId = getCurObjId();//TODO: change this method
 
-				//qDebug() << getCurObjectMethodResultList(elemAndListNames.second);
-				//qDebug() << elemAndListNames;
-
 				// Здесь развертка foreach
 				foreach (Id element, getCurObjectMethodResultList(elemAndListNames.second)) {
 					if (elemAndListNames.first == "." || element.element() == elemAndListNames.first) {
 						//обновление mCurrentObjectId
 						mCurrentObjectId = element;
 						
-						//qDebug() << mCurrentObjectId;
-						//qDebug() << mCurrentObjectId.element();
-						//qDebug() << mGeMaker->getUniqueName(mCurrentObjectId);
-
 						resultStr += interpret(foreachBlockStream);
 						
 						foreachBlockStream.seek(0);

@@ -1,0 +1,106 @@
+Task InitialBlockElement
+#!/port_1
+#!if %port_1% == %Ультразвуковой сенсор%
+#!{
+	ecrobot_init_sonar_sensor(NXT_PORT_S1);
+#!}
+#!if %port_1% == %Сенсор цвета (полные цвета)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S1, NXT_LIGHTSENSOR_WHITE);
+#!}
+#!if %port_1% == %Сенсор цвета (красный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S1, NXT_LIGHTSENSOR_RED);
+#!}
+#!if %port_1% == %Сенсор цвета (зеленый)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S1, NXT_LIGHTSENSOR_GREEN);
+#!}
+#!if %port_1% == %Сенсор цвета (синий)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S1, NXT_LIGHTSENSOR_BLUE);
+#!}
+#!if %port_1% == %Сенсор цвета (пассивный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S1, NXT_COLORSENSOR);
+#!}
+
+#!/port_2
+#!if %port_2% == %Ультразвуковой сенсор%
+#!{
+	ecrobot_init_sonar_sensor(NXT_PORT_S2);
+#!}
+#!if %port_2% == %Сенсор цвета (полные цвета)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S2, NXT_LIGHTSENSOR_WHITE);
+#!}
+#!if %port_2% == %Сенсор цвета (красный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S2, NXT_LIGHTSENSOR_RED);
+#!}
+#!if %port_2% == %Сенсор цвета (зеленый)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S2, NXT_LIGHTSENSOR_GREEN);
+#!}
+#!if %port_2% == %Сенсор цвета (синий)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S2, NXT_LIGHTSENSOR_BLUE);
+#!}
+#!if %port_2% == %Сенсор цвета (пассивный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S2, NXT_COLORSENSOR);
+#!}
+
+#!/port_3
+#!if %port_3% == %Ультразвуковой сенсор%
+#!{
+	ecrobot_init_sonar_sensor(NXT_PORT_S3);
+#!}
+#!if %port_3% == %Сенсор цвета (полные цвета)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S3, NXT_LIGHTSENSOR_WHITE);
+#!}
+#!if %port_3% == %Сенсор цвета (красный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S3, NXT_LIGHTSENSOR_RED);
+#!}
+#!if %port_3% == %Сенсор цвета (зеленый)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S3, NXT_LIGHTSENSOR_GREEN);
+#!}
+#!if %port_3% == %Сенсор цвета (синий)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S3, NXT_LIGHTSENSOR_BLUE);
+#!}
+#!if %port_3% == %Сенсор цвета (пассивный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S3, NXT_COLORSENSOR);
+#!}
+
+#!/port_4
+#!if %port_4% == %Ультразвуковой сенсор%
+#!{
+	ecrobot_init_sonar_sensor(NXT_PORT_S4);
+#!}
+#!if %port_4% == %Сенсор цвета (полные цвета)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S4, NXT_LIGHTSENSOR_WHITE);
+#!}
+#!if %port_4% == %Сенсор цвета (красный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S4, NXT_LIGHTSENSOR_RED);
+#!}
+#!if %port_4% == %Сенсор цвета (зеленый)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S4, NXT_LIGHTSENSOR_GREEN);
+#!}
+#!if %port_4% == %Сенсор цвета (синий)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S4, NXT_LIGHTSENSOR_BLUE);
+#!}
+#!if %port_4% == %Сенсор цвета (пассивный)%
+#!{
+	ecrobot_init_nxtcolorsensor(NXT_PORT_S4, NXT_COLORSENSOR);
+#!}
+
+@@!task NextElementCall@@

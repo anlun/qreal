@@ -1,0 +1,5 @@
+Task NextElementCall
+#!foreach . in outgoingConnectedElements
+#!{
+	@@uniqueName@@();
+#!}

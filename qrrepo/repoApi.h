@@ -51,9 +51,7 @@ namespace qrRepo {
 		void deleteUsage(qReal::Id const &source, qReal::Id const &destination);
 
 		qReal::IdList connectedElements(qReal::Id const &id) const;
-		/// With to(id)
 		qReal::IdList outgoingConnectedElements(qReal::Id const &id) const;
-		/// With from(id)
 		qReal::IdList incomingConnectedElements(qReal::Id const &id) const;
 
 		QString typeName(qReal::Id const &id) const;

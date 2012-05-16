@@ -1,0 +1,32 @@
+Task IfElement
+#!saveObj IF_ELEMENT
+#!foreach . in outgoingLinks
+#!{
+#!if %Guard% == %меньше 0%
+#!{
+#!for to
+#!{
+	if (@@IF_ELEMENT@Condition@@ < 0) {
+		@@uniqueName@@();
+	}
+#!}
+#!}
+#!if %Guard% == %больше 0%
+#!{
+#!for to
+#!{
+	if (@@IF_ELEMENT@Condition@@ > 0) {
+		@@uniqueName@@();
+	}
+#!}
+#!}
+#!if %Guard% == %равно 0%
+#!{
+#!for to
+#!{
+	if (@@IF_ELEMENT@Condition@@ == 0) {
+		@@uniqueName@@();
+	}
+#!}
+#!}
+#!}

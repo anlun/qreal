@@ -1,0 +1,25 @@
+Task LoopElement
+
+#!foreach . in outgoingLinks
+#!{
+#!if %Guard% == %итерация%
+#!{
+#!foreach . in outgoingConnectedElements
+#!{
+	for (int __iter__ = 0; __iter__ < @@Iterations@@; __iter__++) {
+		@@uniqueName@@();
+	}
+#!}
+#!}
+#!}
+#!/ For nextElement
+#!foreach . in outgoingLinks
+#!{
+#!if %Guard% == %%
+#!{
+#!foreach . in outgoingConnectedElements
+#!{
+	@@uniqueName@@();
+#!}
+#!}
+#!}

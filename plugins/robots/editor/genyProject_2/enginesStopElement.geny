@@ -1,0 +1,14 @@
+Task EnginesStopElement
+#!if %Ports% contains %A%
+#!{
+	nxt_motor_set_speed(NXT_PORT_A, 0, 0);
+#!}
+#!if %Ports% contains %B%
+#!{
+	nxt_motor_set_speed(NXT_PORT_B, 0, 0);
+#!}
+#!if %Ports% contains %C%
+#!{
+	nxt_motor_set_speed(NXT_PORT_C, 0, 0);
+#!}
+@@!task NextElementCall@@

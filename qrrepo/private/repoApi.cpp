@@ -212,8 +212,6 @@ qReal::IdList RepoApi::outgoingConnectedElements(qReal::Id const &id) const
 
 		result.append(toElem);
 	}
-	result.append(to(id));
-
 	return result;
 }
 
@@ -225,8 +223,6 @@ qReal::IdList RepoApi::incomingConnectedElements(qReal::Id const &id) const
 
 		result.append(fromElem);
 	}
-	result.append(from(id));
-
 	return result;
 }
 

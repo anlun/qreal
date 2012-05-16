@@ -1,0 +1,15 @@
+Task EnginesForwardElement
+#!/ надо как-то парсить Power
+#!if %Ports% contains %A%
+#!{
+	nxt_motor_set_speed(NXT_PORT_A, @@Power@@, 0);
+#!}
+#!if %Ports% contains %B%
+#!{
+	nxt_motor_set_speed(NXT_PORT_B, @@Power@@, 0);
+#!}
+#!if %Ports% contains %C%
+#!{
+	nxt_motor_set_speed(NXT_PORT_C, @@Power@@, 0);
+#!}
+@@!task NextElementCall@@

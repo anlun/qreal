@@ -1,0 +1,58 @@
+Task ElementGen
+void @@uniqueName@@() {
+#!switch ELEMENT_TYPE
+#!{
+#!case 'Beep':
+#!{
+	ecrobot_sound_tone(1000, 100, 50);
+@@!task NextElementCall@@
+#!}
+#!case 'EnginesBackward':
+#!{
+@@!task EnginesBackwardElement@@
+#!}
+#!case 'EnginesForward':
+#!{
+@@!task EnginesForwardElement@@
+#!}
+#!case 'EnginesStop':
+#!{
+@@!task EnginesStopElement@@
+#!}
+#!case 'FinalNode':
+#!{
+	halt();
+#!}
+#!case 'InitialBlock'
+#!{
+@@!task InitialBlockElement@@
+#!}
+#!case 'InitialNode':
+#!{
+@@!task NextElementCall@@
+#!}
+#!case 'NullificationEncoder':
+#!{
+	nxt_motor_set_count(NXT_PORT_@@Port@@, 0);
+@@!task NextElementCall@@
+#!}
+#!case 'PlayTone':
+#!{
+	ecrobot_sound_tone(@@Frequency@@, @@Duration@@, 50);
+@@!task NextElementCall@@
+#!}
+#!case 'Timer':
+#!{
+	systick_wait_ms(@@Delay@@);
+@@!task NextElementCall@@
+#!}
+#!case 'IfBlock':
+#!{
+@@!task IfElement@@
+#!}
+#!case 'Loop':
+#!{
+@@!task LoopElement@@
+#!}
+#!}
+}
