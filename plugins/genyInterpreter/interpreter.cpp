@@ -232,34 +232,49 @@ QString Interpreter::caseStringParse(QString const &str)
 	return caseValue.mid(firstApostoIndex + 1, lastApostoIndex - firstApostoIndex - 1);
 }
 
+QString Interpreter::IfStringParseHelper::alphabet()
+{	
+	return "абвгдеёжзиклмнопрстуфхцчшщъыьэюя"\
+		"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+}
+
+QString Interpreter::IfStringParseHelper::expressionTemplate()
+{	
+	return "[" + IfStringParseHelper::alphabet() + "a-zA-Z0-9 ]*"; //TODO: problem of empty property name may occur
+}
+	
+Interpreter::IfStringParseHelper::IfControlStringType
+	Interpreter::IfStringParseHelper::stringType(QString const &str)
+{
+	QRegExp const positiveStatement("#!if %" + IfStringParseHelper::expressionTemplate() + "% == %" + IfStringParseHelper::expressionTemplate() + "%");
+	if (positiveStatement.exactMatch(str)) {
+		return EqualStatement;
+	}
+
+	QRegExp const negativeStatement("#!if %" + IfStringParseHelper::expressionTemplate() + "% != %" + IfStringParseHelper::expressionTemplate() + "%");
+	if (negativeStatement.exactMatch(str)) {
+		return InequalStatement;
+	}
+
+	QRegExp const containsStatement("#!if %" + IfStringParseHelper::expressionTemplate() + "% contains %" + IfStringParseHelper::expressionTemplate() + "%");
+	if (containsStatement.exactMatch(str)) {
+		return ContainsStatement;
+	}
+
+	return NoIfStatement;
+}
+
 bool Interpreter::ifStringParse(QString const &str)
 {
-	QString const alphabet =
-		"абвгдеёжзиклмнопрстуфхцчшщъыьэюя"\
-		"АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-	QString const expressionTemplate = "[" + alphabet + "a-zA-Z0-9 ]*"; //TODO: problem of empty property name may occur
-
 	QString const workStr = str.toUtf8();
 
-	//qDebug() << "___IF_BLOCK_START";
-	//qDebug() << str;
-
-	bool isPositiveType;
-	QRegExp const positiveStatement("#!if %" + expressionTemplate + "% == %" + expressionTemplate + "%");	
-	QRegExp const negativeStatement("#!if %" + expressionTemplate + "% != %" + expressionTemplate + "%");
-
-	if (positiveStatement.exactMatch(workStr)) {
-		isPositiveType = true;
-
-	} else if (negativeStatement.exactMatch(workStr)) {
-		isPositiveType = false;
-
-	} else {
+	IfStringParseHelper::IfControlStringType currentType = IfStringParseHelper::stringType(workStr);
+	if (currentType == IfStringParseHelper::NoIfStatement) {
 		qDebug() << "Error! Bad \'if\' structure!";
 		return false;
 	}
 
-	QString const ruleParamStatement = "%" + expressionTemplate + "%";
+	QString const ruleParamStatement = "%" + IfStringParseHelper::expressionTemplate() + "%";
 	QRegExp const paramStatement(ruleParamStatement);
 	int pos = paramStatement.indexIn(workStr);
 	QString propertyName = paramStatement.capturedTexts().at(0);
@@ -269,13 +284,25 @@ bool Interpreter::ifStringParse(QString const &str)
 	// Deleting '%', '%'
 	propertyName = propertyName.mid(1, propertyName.size() - 2);
 	value = value.mid(1, value.size() - 2);
+	QString const property = getCurObjProperty(propertyName).toUtf8();
 
-	qDebug() << "___IF_BLOCK_NEAR_END";
-
-	bool const isEqual = getCurObjProperty(propertyName).toUtf8() == value;
-
-	if (isPositiveType == isEqual) {
-		return true;
+	switch (currentType) {
+		case IfStringParseHelper::EqualStatement:
+			{
+				return property == value;
+			}
+		case IfStringParseHelper::InequalStatement:
+			{
+				return property != value;
+			}
+		case IfStringParseHelper::ContainsStatement:
+			{
+				return property.contains(value);
+			}
+		case IfStringParseHelper::NoIfStatement:
+			{
+				return false;
+			}
 	}
 
 	return false;
@@ -565,9 +592,7 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 					return "";
 				}
 
-				QString res = interpret(blockStream);
-				qDebug() << res;
-				return res;
+				return interpret(blockStream);
 			}
 		case notControlType:
 			{

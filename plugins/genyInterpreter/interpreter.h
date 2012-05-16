@@ -76,6 +76,22 @@ private:
 	//Returns is need to interpret block or not
 	bool ifStringParse(QString const &);
 
+	class IfStringParseHelper {
+		public:
+			/// Returns alphabet suitable for parameters of if control line
+			static QString alphabet();
+			static QString expressionTemplate();
+
+			enum IfControlStringType {
+				EqualStatement
+				, InequalStatement
+				, ContainsStatement
+				, NoIfStatement
+			};
+
+			static IfControlStringType stringType(QString const &);
+	};
+
 	QString saveObjLabel(QString const &);
 	void addLabel(QString const &);
 
