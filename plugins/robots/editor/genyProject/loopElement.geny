@@ -4,7 +4,7 @@ Task LoopElement
 #!{
 #!if %Guard% == %итерация%
 #!{
-#!foreach . in outgoingConnectedElements
+#!for to
 #!{
 	for (int __iter__ = 0; __iter__ < @@Iterations@@; __iter__++) {
 		@@uniqueName@@();
@@ -17,7 +17,7 @@ Task LoopElement
 #!{
 #!if %Guard% == %%
 #!{
-#!foreach . in outgoingConnectedElements
+#!for to
 #!{
 	@@uniqueName@@();
 #!}

@@ -287,12 +287,6 @@ bool Interpreter::ifStringParse(QString const &str)
 	value = value.mid(1, value.size() - 2);
 	QByteArray const property = getCurObjProperty(propertyName).toUtf8();
 
-	qDebug() << "IF!!!!!";
-	qDebug() << property;
-	qDebug() << QString(property);
-	qDebug() << value;
-	qDebug() << QString(value);
-
 	switch (currentType) {
 		case IfStringParseHelper::EqualStatement:
 			{
