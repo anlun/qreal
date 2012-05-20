@@ -287,6 +287,12 @@ bool Interpreter::ifStringParse(QString const &str)
 	value = value.mid(1, value.size() - 2);
 	QByteArray const property = getCurObjProperty(propertyName).toUtf8();
 
+	qDebug() << "IF!!!!!";
+	qDebug() << property;
+	qDebug() << QString(property);
+	qDebug() << value;
+	qDebug() << QString(value);
+
 	switch (currentType) {
 		case IfStringParseHelper::EqualStatement:
 			{
@@ -451,18 +457,16 @@ QPair<QString, QString> Interpreter::getNextCaseBlock(QTextStream& stream)
 	if (stream.atEnd())
 		return QPair<QString, QString>();
 
-	QString caseStr = stream.readLine();
+	QString const caseStr = stream.readLine();
 
 	if (controlStringType(caseStr) != caseType) {
 		qDebug() << "Error! There is must be case string but \'" << caseStr << "\' found!";
 		return QPair<QString, QString>();
 	}
 
-	QString braceBlock = getBraceBlock(stream);
+	QString const braceBlock = getBraceBlock(stream);
 	
-	QTextStream caseBlockStream(&braceBlock);
-
-	return QPair<QString, QString>(caseStringParse(caseStr), interpret( caseBlockStream ));
+	return QPair<QString, QString>(caseStringParse(caseStr), braceBlock);
 }
 
 QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& stream)
@@ -568,7 +572,7 @@ QString Interpreter::controlStringParse(QString const& parsingStr, QTextStream& 
 				    !nextCaseBlock.second.isEmpty(); 
 				    nextCaseBlock = getNextCaseBlock(switchBlockStream)) {
 					if (nextCaseBlock.first == switchProperty || nextCaseBlock.first == "") { 
-					//nextCaseBlock.first == "" - default case
+						//nextCaseBlock.first == "" - default case
 						QTextStream caseBlockStream(&(nextCaseBlock.second));
 						resultStr += interpret(caseBlockStream);
 						break;
