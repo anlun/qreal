@@ -1,5 +1,5 @@
 Task WaitForTouchSensorElement
-while(!ecrobot_get_touch_sensor(NXT_PORT_S@@Port@@))
-{
-}
+	while(!ecrobot_get_touch_sensor(NXT_PORT_S@@Port@@))
+	{
+	}
 @@!task NextElementCall@@

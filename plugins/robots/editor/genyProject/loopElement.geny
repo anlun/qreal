@@ -1,12 +1,13 @@
 Task LoopElement
 
+#!saveObj LOOP
 #!foreach . in outgoingLinks
 #!{
 #!if %Guard% == %итерация%
 #!{
 #!for to
 #!{
-	for (int __iter__ = 0; __iter__ < @@Iterations@@; __iter__++) {
+	for (int __iter__ = 0; __iter__ < @@LOOP@Iterations@@; __iter__++) {
 		@@uniqueName@@();
 	}
 #!}

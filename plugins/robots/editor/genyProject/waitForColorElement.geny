@@ -4,30 +4,29 @@ Task WaitForColorElement
 		!=
 #!if %Color% == %Красный%
 #!{
-	NXT_COLOR_RED
+		NXT_COLOR_RED
 #!}
 #!if %Color% == %Зелёный%
 #!{
-	NXT_COLOR_GREEN
+		NXT_COLOR_GREEN
 #!}
 #!if %Color% == %Синий%
 #!{
-	NXT_COLOR_BLUE
+		NXT_COLOR_BLUE
 #!}
 #!if %Color% == %Чёрный%
 #!{
-	NXT_COLOR_BLACK
+		NXT_COLOR_BLACK
 #!}
 #!if %Color% == %Жёлтый%
 #!{
-	NXT_COLOR_YELLOW
+		NXT_COLOR_YELLOW
 #!}
 #!if %Color% == %Белый%
 #!{
-	NXT_COLOR_WHITE
+		NXT_COLOR_WHITE
 #!}
-
 	)
-{
-}
+	{
+	}
 @@!task NextElementCall@@

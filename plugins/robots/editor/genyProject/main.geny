@@ -22,8 +22,8 @@ void @@uniqueName@@();
 #!foreach InitialNode in elementsByType(InitialNode)
 #!{
 int main() {
-@@uniqueName@@();
-return 0;
+	@@uniqueName@@();
+	return 0;
 }
 #!}
 #!}
