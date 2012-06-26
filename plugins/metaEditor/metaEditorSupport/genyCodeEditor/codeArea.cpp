@@ -446,7 +446,9 @@ int CodeArea::tabulationChangeAfterLine(QString const &str)
 		str.startsWith("foreach") ||
 		str.startsWith("toFile") ||
 		str.startsWith("switch") ||
-		str.startsWith("case")
+		str.startsWith("case") ||
+		str.startsWith("if") ||
+		str.startsWith("for")
 	)
 	{
 		return 1;

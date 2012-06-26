@@ -17,7 +17,9 @@ SyntaxHighlighter::SyntaxHighlighter(QTextDocument *document): QSyntaxHighlighte
 	QStringList keywordPatterns;
 	keywordPatterns << "\\bswitch\\b" << "\\bcase\\b" << "\\bforeach\\b"
 					<< "\\bwhile\\b" << "\\bif\\b" << "\\belse\\b"
-					<< "\\bin\\b" << "\\btoFile\\b";
+					<< "\\bin\\b" << "\\btoFile\\b"
+					<< "\\bfor\\b" << "\\bto\\b"
+					<< "\\bparent\\b" << "\\bfrom\\b";
 	foreach (const QString &pattern, keywordPatterns) {
 		rule.pattern = QRegExp(pattern);
 		rule.format = mKeywordFormat;
